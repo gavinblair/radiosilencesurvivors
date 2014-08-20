@@ -1,0 +1,30 @@
+{
+  "name": "paca",
+  "version": "0.0.0",
+  "description": "Point and Click Adventure Game",
+  "main": "index.html",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gavinblair/paca.git"
+  },
+  "author": "Gavin Blair",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/gavinblair/paca/issues"
+  },
+  "window": {
+    "title": "Point and Click Adventure Game",
+    "icon": "icon.png",
+    "toolbar": false,
+    "frame": false,
+    "fullscreen": true,
+    "position": "center"
+  },
+  "nodejs": false
+}

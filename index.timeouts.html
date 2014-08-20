@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=.5, maximum-scale=1.0, user-scalable=no">
+        <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
+        <!-- Place favicon.ico and apple-touch-icon(s) in the root directory -->
+        <meta name='HandheldFriendly' content='True'>
+        <meta name='MobileOptimized' content='640'>
+
+ 
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+	<script src="js/icanhaz.min.js"></script>
+	<script src="phonegap.js"></script>
+        <script src="js/vendor/modernizr-2.7.1.min.js"></script>
+        <script id="menu" type="text/html">
+            <h1>HTML Adventure</h1>
+            <span class='btn' id='continue'>Continue</span>
+            <span class='btn' id='newgame'>New Game</span>
+            <span class='btn' id='options'>Options</span>
+            <style>
+                h1 {
+                    position: absolute;
+                    width: 100%;
+                    text-align: center;
+                    top: 100px;
+                    color: #fff;
+                    font-size: 3em;
+                }
+                #continue {
+                    top: 300px;
+                    display: none;
+                }
+                #newgame {
+                    top: 400px;
+                }
+                #options {
+                    top: 500px;
+                }
+                #inventory {
+                    display: none;
+                }
+            </style>
+            <script>
+                if(localStorage.game != undefined && localStorage.game.length > 0) {
+                    $('#continue').show();
+                } else {
+                    $('#continue').hide();
+                }
+                $('#newgame').on('click', function(){
+                    scene('intro1');
+                    states = {};
+                    localStorage.game = '';
+                    return false;
+                });
+                $('#continue').on('click', function(){
+                    load();
+                    return false;
+                });
+            </script>
+        </script>
+        <script id="intro1" type="text/html">
+            <a id='shuttle'></a>
+            <div id='text'>Created by Gavin Blair</div>
+            <style>
+                #text {
+                    top: 40%;
+                    left: 5%;
+                }             
+                #game {
+                    background: url(img/intro1.png) center center;
+                }
+                #shuttle {
+                    height: 94px;
+                    width: 140px;
+                    top: 238px;
+                    left: 808px;
+                    background-image: url(img/shuttle.png?d);
+                    -webkit-animation: rocketing .3s steps(5) infinite;
+                }
+                #inventory {
+                    display: none;
+                }
+                @-webkit-keyframes rocketing {
+                   from { background-position:    0 0px; }
+                     to { background-position: 0 -470px; }
+                }
+            </style>
+            <script>
+                $('#audioTitle')[0].play();
+                //12 seconds intro 1: shuttle rocketing to earth -- 13 seconds may be too long
+                setTimeout(function(){
+                    scene('intro2');
+                }, 13500);
+                //13 seconds intro 2: parachute
+                //intro 3 = crash
+            </script>
+        </script>
+        <script id="intro2" type="text/html">
+            <a id='shuttle'></a>
+            <div id='text'>Music by Brandon Blair</div>
+            <style>
+                #text {
+                    top: 40%;
+                    /*-webkit-animation: scrolling 13s steps(24) forwards;
+                    animation-iteration-count: 1;*/
+                }
+                /*@-webkit-keyframes scrolling {
+                   from { top: 40% }
+                     to { top: 50% }
+                }*/
+                #game {
+                    background: url(img/intro2.png) center center;
+                }
+                #shuttle {
+                    height: 132px;
+                    width: 112px;
+                    top: 100px;
+                    left: 508px;
+                    background-image: url(img/parachute.png?c);
+                    -webkit-animation: falling 6s forwards steps(24);
+                    animation-iteration-count: 1;
+                }
+                @-webkit-keyframes falling {
+                   from { top: 100px; }
+                     to { top: 500px; }
+                }
+                #shuttle.landing {
+                    -webkit-animation: landing 2s steps(4);
+                    animation-iteration-count: 1;
+                    background-position: 0 -660px;
+                }
+                @-webkit-keyframes landing {
+                   from { background-position:    0 -132px; }
+                     to { background-position: 0 -660px; }
+                }
+                #inventory {
+                    display: none;
+                }
+            </style>
+            <script>
+                setTimeout(function(){
+                    $('#shuttle').css('background-position', '0 -132px');
+                    setTimeout(function(){
+                        $('#shuttle').css('top', '500px').addClass('landing');
+                        setTimeout(function(){
+                            $('#shuttle').css('background-position', 'bottom center');
+                        }, 1500);
+                    }, 3000);
+                }, 3000);
+                //13 seconds intro 2: parachute
+                
+                setTimeout(function(){
+                    scene('intro3');
+                }, 13000);
+                //intro 3 = crash
+            </script>
+        </script>
+        <script id="intro3" type="text/html">
+            <div id='mover'><a id='shuttle' class='sinking'></a></div>
+            <div id='foreground'></div>
+            <div id='swimming'><a id='swimmer'></a></div>
+            <div id='text'>Artwork by Gavin Blair</div>
+            <style>
+                #text {
+                    top: 20%;
+                    -webkit-animation: scrolling 6s steps(24) forwards;
+                    animation-iteration-count: 1;
+                }
+                @-webkit-keyframes scrolling {
+                   from { top: 40% }
+                     to { top: 10% }
+                }
+                #game {
+                    background: url(img/intro3.png) center center;
+                }
+                #foreground {
+                    position: absolute;
+                    z-index: 999;
+                    height: 100%;
+                    width: 100%;
+                    background: url(img/intro3_fg.png) center center;
+                }
+                #shuttle {
+                    height: 72px;
+                    width: 80px;
+                    top: 0;
+                    left: 0;
+                    background-image: url(img/sinking.png?c);
+                }
+                #shuttle.sinking {
+                    -webkit-animation: sinking 1s steps(5) infinite;
+                }
+                @-webkit-keyframes sinking {
+                   from { background-position: 0 0; }
+                     to { background-position: 0 -360px; }
+                }
+                #swimming.shown {
+                    position: absolute;
+                    height: 36px;
+                    width: 28px;
+                    top: 500px;
+                    left: 508px;
+                    -webkit-animation: floating 6s steps(24) forwards;
+                    animation-iteration-count: 1;
+                }
+                @-webkit-keyframes floating {
+                   from { top: 500px; }
+                     to { top: -40px; }
+                }
+                .shown #swimmer {
+                    height: 100%;
+                    width: 100%;
+                    top: 0;
+                    left: 0;
+                    background-image: url(img/swimming.png);
+                    -webkit-animation: swimming .3s steps(2) infinite;
+                }
+                @-webkit-keyframes swimming {
+                   from { background-position: 0 0; }
+                     to { background-position: 0 -72px; }
+                }
+                #mover {
+                    position: absolute;
+                    top: 100px;
+                    left: 508px;
+                    height: 72px;
+                    width: 80px;
+                    -webkit-animation: falling 6s forwards steps(24);
+                    animation-iteration-count: 1;
+                }
+                @-webkit-keyframes falling {
+                    from { top: 100px; }
+                    to { top: 500px; }
+                }
+                #inventory {
+                    display: none;
+                }
+            </style>
+            <script>
+                setTimeout(function(){
+                    $('#shuttle').removeClass('sinking');
+                    $('#shuttle').css('background', 'url(img/underwater.png) no-repeat bottom center');
+                    $('#swimming').addClass('shown');
+                }, 6000);
+                setTimeout(function(){
+                    scene('beach');
+                }, 13000);
+            </script>
+        </script>
+        <script id="inventory" type="text/html">
+            <style>
+                #inventory {
+                    display: block;
+                }
+                #inventory [data-tool=key]{
+                    background-image: url(img/bigkey.png);
+                }
+            </style>
+        </script>
+        <script id="template" type="text/html">
+            <a id="sprite"></a>
+            <style>
+                #game {
+                    background: url(img/.png) center center;
+                }
+                #sprite {
+                    left: 20px;
+                }
+            </style>
+            <script>
+                //ready the room with any necessary states
+                
+
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        
+                    }
+                }
+            </script>
+            {{>inventory}}
+        </script>
+        <script id="beach" type="text/html">
+            <a id="sprite"></a>
+            <style>
+                #game {
+                    background: url(img/beach.png) center center;
+                }
+                #sprite {
+                    left: 20px;
+                }
+            </style>
+            <script>
+                //ready the room with any necessary states
+                
+
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        
+                    }
+                }
+            </script>
+            {{>inventory}}
+        </script>
+        <script id="room1" type="text/html">
+            <a id='door' class='locked'></a>
+            <a id='key'></a>
+            <a id='sprite'></a>
+            <style>
+                #game {
+                    background: url(img/room.png) center center;
+                }
+                #sprite {
+                    left: 182px;
+
+                }
+                #door {
+                    width: 76px;
+                    height: 215px;
+                    bottom: 150px;
+                    left: 489px;
+                    top: 285px;
+                }
+                #door.locked {
+                    background: url(img/door.png);
+                }
+                #key {
+                    width: 40px;
+                    height: 40px;
+                    background: url(img/key.png) center center no-repeat;
+                    bottom: 110px;
+                    right: 100px;
+                }
+            </style>
+            <script>
+                //ready the room with any necessary states
+                if(states.door === 'unlocked') {
+                    $('#door').removeClass('locked');
+                }
+                if(states.key === 'taken') {
+                    $('#key').remove();
+                }
+                if(states.used_door === 'true'){
+                    $('#sprite').css('left', $('#door').css('left'));
+                }
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        case 'door':
+                            if(tool === 'eye'){
+                                if($('#door').hasClass('locked')){
+                                    say("It's a door.");
+                                } else {
+                                    say("It's an open door. I wonder what's on the other side?");
+                                }
+                            } else if(tool === 'hand'){
+                                if(hastool('key')) {
+                                    say("It's still locked. I wonder if this key will work?");
+                                } else {
+                                    if($('#door').hasClass('locked')) {
+                                        say("It's locked. I wonder where the key is?");
+                                    } else {
+                                        states.used_door = 'true';
+                                        scene('room2');
+                                    }
+                                }
+                            } else if(tool === 'key'){
+                                $('#door').removeClass('locked');
+                                states.door = 'unlocked';
+                                lose_tool('key');
+                                
+                                say("That was easy.");
+                            }
+                        break;
+                        case 'key':
+                            if(tool === 'eye'){
+                                say("It's a key. How convenient.");
+                            } else if(tool === 'hand'){
+                                $('#key').remove();
+                                states.key = 'taken';
+                                add_tool('key');
+                            }
+                        break;
+                    }
+                }
+            </script>
+            {{>inventory}}
+        </script>
+        <script id="room2" type="text/html">
+            <a id='sprite'></a>
+            <a id='door'></a>
+            <a id='wizard'></a>
+            <style>
+                #game {
+                    background: url(img/room2.png) center center;
+                }
+                #sprite {
+                    left: 182px;
+                }
+                #door {
+                    width: 76px;
+                    height: 215px;
+                    bottom: 150px;
+                    left: 134px;
+                    top: 280px;
+                }
+                #wizard {
+                    height: 152px;
+                    width: 82px;
+                    bottom: 128px;
+                    right: 50px;
+                    
+                    background: url(img/wizard.png?b) 0 0;
+                    -webkit-animation: wizarding 6s steps(5) infinite;
+                }
+                @-webkit-keyframes wizarding {
+                   from { background-position:    0 0px; }
+                     to { background-position: 0 -760px; }
+                }
+                #inventory [data-tool=sword]{
+                    background-image: url(img/sword.png);
+                }
+            </style>
+            <script>
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        case 'door':
+                            if(tool === 'hand') {
+                                scene('room1');
+                            } else if(tool === 'eye'){
+                                say("The only light is coming from the door.");
+                            }
+                        break;
+                        case 'wizard':
+                            if(tool === 'eye') {
+                                say("AAH!");
+                            } else if (tool === 'hand') {
+                                var askoptions = {
+                                    who: 'Who are you?',
+                                    what: 'What are you doing here?',
+                                    where: 'What is this place?',
+                                };
+                                if(states.asked_where === 'true') {
+                                    delete askoptions.where;
+                                    askoptions.more = 'Tell me more about this place.';
+                                }
+                                if(states.asked_more === 'true'){
+                                    delete askoptions.more;
+                                    askoptions.sword = 'Can you please give me a sword?';
+                                }
+                                if(states.asked_sword === 'true') {
+                                    delete askoptions.sword;
+                                    askoptions.bye = 'Thanks for the sword!';
+                                } else {
+                                    //make sure this is last
+                                    askoptions.bye = 'Goodbye';
+                                }
+                                ask(askoptions);
+
+                                $('#text span').on('click', function(){
+                                    var t = $(this).attr('data-say');
+                                    switch(t){
+                                        case 'who':
+                                            say("I am a Wizard. Duh.", "purple");
+                                        break;
+                                        case 'what':
+                                            say("I'm being magical!", "purple");
+                                        break;
+                                        case 'where':
+                                            say("This is a dark room. It is also something that I talk about a lot. There sure is a lot of talking happening right now, and it is coming from me. You are stuck listening to me.", "purple");
+                                            states.asked_where = 'true';
+                                        break;
+                                        case 'bye':
+                                            say("See ya, sucker!", "purple");
+                                        break;
+                                        case 'more':
+                                            say("This is a magical land where everyone's a baby, baby hearts baby hands. Baby policeman! Baby D.A.! Baby court appointed defence attorney! Baby bus driver! Baby Hobo! Incredible babies, go babies go!", "purple");
+                                            states.asked_more = 'true';
+                                        break;
+                                        case 'sword':
+                                            say("Well... OK. Here you go", "purple");
+                                            states.asked_sword = 'true';
+                                            add_tool('sword');
+                                        break;
+                                    }
+                                    return false;
+                                });
+                            } else if (tool === 'sword') {
+                                say("I don't think that's a good idea. He looks dangerous.");
+                            }
+                        break;
+                    }
+                }
+                
+            </script>
+            {{>inventory}}
+        </script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div id='game'>
+            <div id='scene'></div>
+            <div id='text'></div>
+            <div id='inventory'>
+                <div data-tool='eye' class='has active'>eye</div>
+                <div data-tool='hand' class='has'>hand</div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <audio id="audioTitle" preload="auto"><source src="audio/Title.mp3" type='audio/mp3; codecs="mp3"' /></audio>
+        <div id='preload'>
+            <!-- rooms -->
+            <div data-preload='img/intro1.png'></div>
+            <div data-preload='img/intro2.png'></div>
+            <div data-preload='img/intro3.png'></div>
+            <div data-preload='img/intro3_fg.png'></div>
+            <div data-preload='img/room.png'></div>
+            <div data-preload='img/room2.png'></div>
+            <!-- sprites -->
+            <div data-preload='img/parachute.png'></div>
+            <div data-preload='img/shuttle.png'></div>
+            <div data-preload='img/sinking.png'></div>
+            <div data-preload='img/soldier.png'></div>
+            <div data-preload='img/soldier_walking.png'></div>
+            <div data-preload='img/sprite.png'></div>
+            <div data-preload='img/sprite_demo.png'></div>
+            <div data-preload='img/swimming.png'></div>
+            <div data-preload='img/underwater.png'></div>
+            <div data-preload='img/walking.png'></div>
+            <div data-preload='img/walking_demo.png'></div>
+            <div data-preload='img/wizard.png'></div>
+            <!-- inventory/other -->
+            <div data-preload='img/sword.png'></div>
+            <div data-preload='img/bigkey.png'></div>
+            <div data-preload='img/door.png'></div>
+            <div data-preload='img/eye.png'></div>
+            <div data-preload='img/hand.png'></div>
+            <div data-preload='img/key.png'></div>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.0.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X');ga('send','pageview');
+        </script>
+    </body>
+</html>
