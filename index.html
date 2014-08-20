@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html class="no-js">
     <head>
         <meta charset="utf-8">
@@ -17,7 +17,7 @@
     <script src="js/icanhaz.min.js"></script>
         <script src="js/vendor/modernizr-2.7.1.min.js"></script>
         <script id="login" type="text/html">
-            <h1>Decompression: Demo</h1>
+            <h1>Decompression: Episode 1</h1>
             <input class='btn' id='email' placeholder="Email Address" />
             <input class='btn' id='password' type='password' placeholder="Password" />
             <span class='btn' id='submit'>Log In</span>
@@ -93,7 +93,7 @@
             </script>
         </script>
         <script id="menu" type="text/html">
-            <h1>Decompression: Demo</h1>
+            <h1>Decompression: Episode 1</h1>
             <span class='btn' id='continue'>Continue</span>
             <span class='btn' id='newgame'>New Game</span>
             <span class='btn' id='options'>Options</span>
@@ -127,7 +127,7 @@
                     $('#continue').hide();
                 }
                 $('#newgame').on('click', function(){
-                    scene('beach');
+                    scene('capsule');
                     states = {};
                     localStorage.game = '';
                     return false;
@@ -153,6 +153,118 @@
                     font-size: 2em;
                 }
             </style>
+        </script>
+        <script id="capsule" type="text/html">
+            <a id='anything'></a>
+            <style>
+                #game {
+                    background-image: url(img/scenes/capsule1.jpg);
+                }
+                #anything {
+                    height: 100%;
+                    width: 100%;
+                    top: 0;
+                    left: 0;
+                }
+                #anything.shake {
+                    -webkit-animation-duration: .75s;
+                    -webkit-animation-fill-mode: both;
+                    -webkit-animation-timing-function: ease-in-out;
+                    -webkit-animation-iteration-count:infinite;
+                    -webkit-animation-name: shake;
+                }
+                #anything.shake2 {
+                    -webkit-animation-duration: .5s !important;
+                    -webkit-animation-name: shake2;
+                }
+                #anything.shake3 {
+                    -webkit-animation-duration: .4s !important;
+                    -webkit-animation-name: shake3;
+                }
+                #anything.shake4 {
+                    -webkit-animation-duration: .3s !important;
+                    -webkit-animation-name: shake4;
+                }
+                @-webkit-keyframes shake {
+                    0%, 100% {-webkit-transform: translateX(0);}
+                    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateX(-10px);}
+                    20%, 40%, 60%, 80% {-webkit-transform: translateX(10px);}
+                }
+                @-webkit-keyframes shake2 {
+                    0%, 100% {-webkit-transform: translateX(0);}
+                    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateX(-5px);}
+                    20%, 40%, 60%, 80% {-webkit-transform: translateX(5px);}
+                }
+                @-webkit-keyframes shake3 {
+                    0%, 100% {-webkit-transform: translateX(0);}
+                    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateX(-15px);}
+                    20%, 40%, 60%, 80% {-webkit-transform: translateX(15px);}
+                }
+                @-webkit-keyframes shake4 {
+                    0%, 100% {-webkit-transform: translateX(0);}
+                    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateY(-20px);}
+                    20%, 40%, 60%, 80% {-webkit-transform: translateY(20px);}
+                }
+            </style>
+            <script>
+                var stage = 0;
+                $('#inventory [data-tool=hand]').click();
+                say("OK, here goes nothing!");
+                say("Time to land this thing and get home!");
+                say("What's the worst that could happen?");
+                say("I wish these controls were in English!");
+                $('#anything').click(function(){
+                    stage++;
+                    switch(stage) {
+                        case 1:
+                            $('#anything').addClass('shake');
+                            $('#anything').css('background-image', 'url(img/scenes/capsule2.jpg)');
+                            say("That did not sound good!");
+                        break;
+                        case 2:
+                            $('#anything').css('background-image', 'url(img/scenes/capsule3.jpg)');
+                            $('#anything').addClass('shake2');
+                            say("Uh oh!");
+                        break;
+                        case 3:
+                            $('#anything').css('background-image', 'url(img/scenes/capsule4.jpg)');
+                            $('#anything').addClass('shake3');
+                            say("It's getting hot in here!");
+                        break;
+                        case 4:
+                            $('#anything').css('background-color', '#000');
+                            $('#anything').css('background-image', 'none');
+                            $('#anything').removeClass('shake');
+                            $('#anything').removeClass('shake2');
+                            $('#anything').removeClass('shake3');
+                            $('#anything').removeClass('shake4');
+                            say("AAAAAHHHHH!!");
+                        break;
+                        case 5:
+                            scene('title');
+                        break;
+                    }
+                });
+            </script>
+        </script>
+        <script id="title" type="text/html">
+            <a id='closetitle'></a>
+            <style>
+                #game {
+                    background: #fff url(img/title.png) no-repeat center center;
+                }
+                #closetitle {
+                    height: 100%;
+                    width: 100%;
+                    top: 0;
+                    left: 0;
+                }
+            </style>
+            <script>
+                $('#closetitle').click(function(){
+                    scene('beach');
+                });
+            </script>
         </script>
         <script id="intro1" type="text/html">
             <a id='shuttle'></a>
