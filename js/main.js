@@ -6,6 +6,7 @@ jQuery(document).ready(function($){
     function CheckSizeZoom() {
 		var minW = 1136;
         zoomLev = $(window).width() / minW;
+
         $(document.body).css('zoom', zoomLev);
         var bottom = $('#game').height()*zoomLev;
 		var bottomOfVisibleWindow = $(window).height();
@@ -218,11 +219,13 @@ function add_tool(tool){
 		say("I can't carry anything else!");
 		return false;
 	}
+	save();
 	return true;
 }
 function lose_tool(tool){
 	$('#inventory [data-tool='+tool+']').removeClass('has').attr('data-tool', '');
 	$('#inventory [data-tool=eye]').click();
+	save();
 }
 
 var isPlaying = false;

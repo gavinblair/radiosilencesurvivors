@@ -158,7 +158,7 @@
             <a id='anything'></a>
             <style>
                 #game {
-                    background-image: url(img/scenes/capsule1.jpg);
+                    background-image: url(img/scenes/capsule1.jpg?v=1);
                 }
                 #anything {
                     height: 100%;
@@ -218,16 +218,16 @@
                     switch(stage) {
                         case 1:
                             $('#anything').addClass('shake');
-                            $('#anything').css('background-image', 'url(img/scenes/capsule2.jpg)');
+                            $('#anything').css('background-image', 'url(img/scenes/capsule2.jpg?v=1)');
                             say("That did not sound good!");
                         break;
                         case 2:
-                            $('#anything').css('background-image', 'url(img/scenes/capsule3.jpg)');
+                            $('#anything').css('background-image', 'url(img/scenes/capsule3.jpg?v=1)');
                             $('#anything').addClass('shake2');
                             say("Uh oh!");
                         break;
                         case 3:
-                            $('#anything').css('background-image', 'url(img/scenes/capsule4.jpg)');
+                            $('#anything').css('background-image', 'url(img/scenes/capsule4.jpg?v=1)');
                             $('#anything').addClass('shake3');
                             say("It's getting hot in here!");
                         break;
@@ -511,8 +511,8 @@
                 #sprite {
                     left: 20px;
                     bottom: 128px;
-                    height: 200px;
-                    width: 52px;
+                    height: 199px;
+                    width: 51px;
                     background: url(img/sprite.png) 0 0;
                     -webkit-animation: standing 12s steps(2) infinite;
                 }
@@ -522,7 +522,7 @@
                 }
                 #sprite.walking {
                     background-image: url(img/walking.png);
-                    width: 60px;
+                    width: 59px;
                     -webkit-animation: walking .8s steps(5) infinite;
                 }
                 @-webkit-keyframes walking {
@@ -569,8 +569,8 @@
                     top: 100px;
                     left: 170px;
                     background: url(img/bird.gif);
-                    height: 32px;
-                    width: 36px;
+                    height: 31px;
+                    width: 35px;
                 }
                 .fly {
                     background: url(img/fly.gif);
@@ -634,7 +634,7 @@
                     left: 790px;
                     bottom: 83px;
                     height: 203px;
-                    width: 26px;
+                    width: 25px;
                     background: url(img/sprite_reflection.png) 0 0 no-repeat;
                     background-size: 25px 406px;
                     -webkit-animation: standing_reflection 12s steps(2) infinite;
@@ -645,7 +645,7 @@
                 }
                 #sprite.walking {
                     background-image: url(img/walking_reflection.png);
-                    width: 30px;
+                    width: 29px;
                     background-size: 30px 1016px;
                     -webkit-animation: walking_reflection .8s steps(5) infinite;
                 }
@@ -749,6 +749,7 @@
             <a id="toshack"></a>
             <a id="stick"></a>
             <a id="rock"></a>
+            <a id="log"></a>
             {{>showinventory}}
             <style>
                 #game {
@@ -770,6 +771,14 @@
                     background: url(img/rock.png);
                     z-index: 10;
                 }
+                #log {
+                    height: 70px;
+                    width: 160px;
+                    top: 381px;
+                    left: 100px;
+                    background: url(img/log.png);
+                    z-index: 10;
+                }
                 #tobeach {
                     right: 0;
                     width: 70px;
@@ -786,7 +795,7 @@
                     right: 20px;
                     bottom: 196px;
                     height: 200px;
-                    width: 52px;
+                    width: 51px;
                     background: url(img/sprite.png) 0 0;
                     -webkit-animation: standing 12s steps(2) infinite;
                 }
@@ -796,7 +805,7 @@
                 }
                 #sprite.walking {
                     background-image: url(img/walking.png);
-                    width: 60px;
+                    width: 59px;
                     -webkit-animation: walking .8s steps(5) infinite;
                 }
                 @-webkit-keyframes walking {
@@ -807,9 +816,6 @@
             <script>
                 //ready the room with any necessary states
                 states.speed = 10;
-                if(states.comingfrom == "beach"){
-                    say("I'd better not stray TOO far away from the landing site, but I really have to find some food!");
-                }
                 if(states.comingfrom == 'shack') {
                     $('#sprite').css('left', '20px');
                 }
@@ -818,6 +824,9 @@
                 }
                 if(hastool("stick")){
                     $("#stick").hide();
+                }
+                if(hastool("log")){
+                    $("#log").hide();
                 }
                 function arrivedat(id){
                     var tool = current_tool();
@@ -857,6 +866,27 @@
                                 break;
                                 case 'stick':
                                     say("Poking the rock with the stick accomplished... nothing.");
+                                break;
+                            }
+                        break;
+                        case 'log':
+                            switch(tool){
+                                case 'eye':
+                                    say("It's a dry log.");
+                                break;
+                                case 'hand':
+                                    say("This could come in handy.");
+                                    add_tool("log");
+                                    $("#log").hide();
+                                break;
+                                case 'stick':
+                                    say("Poking the log with the stick accomplished... nothing.");
+                                break;
+                                case 'jerrycan':
+                                    say("Let's not do this here.");
+                                break;
+                                case 'rock':
+                                    say("I smacked the log with the rock, and it made a predictable sound.");
                                 break;
                             }
                         break;
@@ -903,7 +933,7 @@
                     right: 20px;
                     bottom: 115px;
                     height: 200px;
-                    width: 52px;
+                    width: 51px;
                     background: url(img/sprite.png) 0 0;
                     -webkit-animation: standing 12s steps(2) infinite;
                 }
@@ -913,7 +943,7 @@
                 }
                 #sprite.walking {
                     background-image: url(img/walking.png);
-                    width: 60px;
+                    width: 59px;
                     -webkit-animation: walking .8s steps(5) infinite;
                 }
                 @-webkit-keyframes walking {
@@ -924,6 +954,9 @@
             <script>
                 //ready the room with any necessary states
                 states.speed = 10;
+                if(states.comingfrom == 'kitchen'){
+                    $('#sprite').css('left', '489px');
+                }
                 if(states.shackopen) {
                     $('#door').addClass('open');
                 }
@@ -954,8 +987,7 @@
                                     } else {
                                         //enter shack
                                         states.comingfrom = "shack";
-                                        /**///scene('kitchen');
-                                        /**/say('YOU WIN! This demo is over :)');
+                                        scene('kitchen');
                                     }
                                 break;
                                 case 'hand':
@@ -964,8 +996,7 @@
                                     } else {
                                         //enter shack
                                         states.comingfrom = "shack";
-                                        /**///scene('kitchen');
-                                        /**/say('YOU WIN! This demo is over :)');
+                                        scene('kitchen');
                                     }
                                 break;
                                 case 'jerrycan':
@@ -994,6 +1025,128 @@
                         case 'toforest':
                             states.comingfrom = 'shack';
                             scene('forest');
+                        break;
+                    }
+                }
+            </script>
+        </script>
+        <script id="kitchen" type="text/html">
+            <a id="sprite"></a>
+            <a id="knife"></a>
+            <a id="lighter"></a>
+            <a id="outside"></a>
+            <a id="bedroom"></a>
+            {{>showinventory}}
+            <style>
+                #knife {
+                    height: 100px;
+                    width: 100px;
+                    border: 2px dotted #000;
+                    left: 200px;
+                    top: 300px;
+                }
+                #knife:after {
+                    content: "knife";
+                }
+                #lighter {
+                    height: 100px;
+                    width: 100px;
+                    border: 2px dotted #000;
+                    left: 350px;
+                    top: 300px;
+                }
+                #lighter:after {
+                    content: "lighter";
+                }
+                #outside {
+                    height: 100%;
+                    width: 100px;
+                    border: 2px dotted #000;
+                    left: 0;
+                    top: 0;
+                }
+                #bedroom {
+                    height: 100%;
+                    width: 100px;
+                    border: 2px dotted #000;
+                    right: 0;
+                    top: 0;
+                }
+                #game {
+                    background: #fff;
+                }
+                #game:after {
+                    content: "kitchen";
+                    font-size: 10em;
+                    text-align: center;
+                }
+                #sprite {
+                    left: 20px;
+                    bottom: 128px;
+                    height: 199px;
+                    width: 51px;
+                    background: url(img/sprite.png) 0 0;
+                    -webkit-animation: standing 12s steps(2) infinite;
+                }
+                @-webkit-keyframes standing {
+                   from { background-position:    0 0px; }
+                     to { background-position: 0 -400px; }
+                }
+                #sprite.walking {
+                    background-image: url(img/walking.png);
+                    width: 59px;
+                    -webkit-animation: walking .8s steps(5) infinite;
+                }
+                @-webkit-keyframes walking {
+                   from { background-position:    0 0px; }
+                     to { background-position:  0 -1000px; }
+                }
+            </style>
+            <script>
+                //ready the room with any necessary states
+                if(states.comingfrom=="bedroom"){
+                    $('#sprite').css('right', '20px');
+                }
+                if(hastool('knife')) {
+                    $('#knife').remove();
+                }
+                if(hastool('lighter')) {
+                    $('#lighter').remove();
+                }
+
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        case 'knife':
+                            switch(tool){
+                                case 'eye':
+                                    say("It's an old, rusty knife.");
+                                break;
+                                case 'hand':
+                                    add_tool('knife');
+                                    $('#knife').remove();
+                                    say("I'll just borrow this...");
+                                break;
+                            }
+                        break;
+                        case 'lighter':
+                            switch(tool){
+                                case 'eye':
+                                    say("It's an empty lighter.");
+                                break;
+                                case 'hand':
+                                    add_tool('lighter');
+                                    $('#lighter').remove();
+                                    say("I'll just borrow this...");
+                                break;
+                            }
+                        break;
+                        case 'bedroom':
+                            scene('bedroom');
+                        break;
+                        case 'outside':
+                            states.comingfrom = 'kitchen';
+                            scene('shack');
                         break;
                     }
                 }
@@ -1061,8 +1214,8 @@
                     left: 20px;
                     bottom: 183px;
                     height: 100px;
-                    width: 211px;
-                    background: url(img/swimming.png) 0 0 no-repeat;
+                    width: 209px;
+                    background: url(img/swimming.png?v=1) 0 0 no-repeat;
                     background-size: 211px 600px;
                     -webkit-animation: swimming 2s steps(6) infinite;
                 }
@@ -1270,6 +1423,9 @@
                                 case 'eye':
                                     say("My hands are shaking from hunger.");
                                 break;
+                                case 'jerrycan':
+                                    say("I poured some of the gasoline on my hands. That... wasn't the smartest thing to do.");
+                                break;
                             }
                         break;
                         case 'rock':
@@ -1284,12 +1440,59 @@
                                 case 'eye':
                                     say("It's a sturdy stick.");
                                 break;
+                                case 'knife':
+                                    lose_tool('stick');
+                                    add_tool('spear');
+                                    say("I made a spear!");
+                                break;
                             }
                         break;
                         case 'jerrycan':
                             switch(tool){
                                 case 'eye':
                                     say("It's a jerry can with a little gas in it.");
+                                break;
+                                case 'hand':
+                                    say("I poured some of the gasoline on my hands. That... wasn't the smartest thing to do.");
+                                break;
+                            }
+                        break;
+                        case 'log':
+                            switch(tool){
+                                case 'eye':
+                                    say("It's a dry log.");
+                                braek;
+                                case 'jerrycan':
+                                    say("I should put the log down first.");
+                                break;
+                            }
+                        break;
+                        case 'knife':
+                            switch(tool){
+                                case 'eye':
+                                    say("It's an old, rusty knife.");
+                                break;
+                                case 'hand':
+                                break;
+                                case 'stick':
+                                break;
+                                case 'log':
+
+                                break;
+                            }
+                        break;
+                        case 'lighter':
+                            switch(tool){
+                                case 'eye':
+                                break;
+                                case 'hand':
+                                break;
+                                case 'stick':
+                                break;
+                                case 'log':
+                                break;
+                                case 'jerrycan':
+
                                 break;
                             }
                         break;
@@ -1302,7 +1505,7 @@
         <div id='game'>
             <div id='scene'></div>
             <div id='text'></div>
-            <div id='inventory'>
+            <div id="inventory">
                 <div data-tool='eye' class='has active'><a class='target'></a></div>
                 <div data-tool='hand' class='has'><a class='target'></a></div>
                 <div><a class='target'></a></div>
@@ -1315,19 +1518,40 @@
                         cursor: url(img/eye.png), pointer;
                     }
                     #inventory [data-tool=eye]{
-                        background-image: url(img/eye.png);
+                        background-image: url(img/icons/eye.png);
                     }
                     #inventory [data-tool=hand]{
-                        background-image: url(img/hand.png);
+                        background-image: url(img/icons/hand.png);
                     }
                     #inventory [data-tool=rock]{
-                        background-image: url(img/rock_icon.png);
+                        background-image: url(img/icons/rock_icon.png);
                     }
                     #inventory [data-tool=stick]{
-                        background-image: url(img/stick_icon.png);
+                        background-image: url(img/icons/stick_icon.png);
                     }
                     #inventory [data-tool=jerrycan]{
-                        background-image: url(img/jerrycan_icon.png);
+                        background-image: url(img/icons/jerrycan_icon.png);
+                    }
+                    #inventory [data-tool=log]{
+                        background-image: url(img/icons/log_icon.png);
+                    }
+                    #inventory [data-tool=knife]{
+                        text-indent: 0;
+                    }
+                    #inventory [data-tool=knife]:after{
+                        content: 'knife';
+                    }
+                    #inventory [data-tool=lighter]{
+                        text-indent: 0;
+                    }
+                    #inventory [data-tool=lighter]:after{
+                        content: 'lighter';
+                    }
+                    #inventory [data-tool=spear]{
+                        text-indent: 0;
+                    }
+                    #inventory [data-tool=spear]:after{
+                        content: 'spear';
                     }
                 </style>
             </div>
