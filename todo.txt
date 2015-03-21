@@ -1,18 +1,9 @@
-- important: double click to exit immediately (exits we've already been to)
-- maintenance: clean up the git project, lose phonegap
-- maintenance: tests (qunit)
-- important: responsive (work on mobile)
-- ios: tiptap to move/use - single tap only for buttons/ui
-- ios: close button to close dialog (must be used)
-- soon: elevation (stairs)
-- options
 
-maybe
-- zoom? (for walking far away) (like elevation, it's still 2D)
-- follow the camera (wide scenes) ?
-- shaky camera (a la sword and sworcery) ?
+intro sequence - a little dialogue
 
-definitely, but later:
-- connect to drupal, you have to be logged in to play
-- purchase ios/android version
-- purchase drupal user role to play on desktop
+more dialog content
+use things on characters
+use items on self
+
+esc button = back to menu
+audio on/off button

@@ -16,118 +16,56 @@
         <link rel="stylesheet" href="css/main.css">
     <script src="js/icanhaz.min.js"></script>
         <script src="js/vendor/modernizr-2.7.1.min.js"></script>
-        <script id="login" type="text/html">
-            <h1>Decompression: Episode 1</h1>
-            <input class='btn' id='email' placeholder="Email Address" />
-            <input class='btn' id='password' type='password' placeholder="Password" />
-            <span class='btn' id='submit'>Log In</span>
-            <style>
-                h1 {
-                    position: absolute;
-                    width: 100%;
-                    text-align: center;
-                    top: 100px;
-                    color: #fff;
-                    font-size: 3em;
-                }
-                #inventory {
-                    display: none;
-                }
-                input.btn {
-                    top: 400px;
-                    position: absolute;
-                    color: #000;
-                }
-                #email {
-                    top: 300px;
-                }
-                #password {
-                    top: 400px;
-                }
-                #submit {
-                    top: 510px;
-                }
-            </style>
-            <script>
-                $('#email').val(localStorage.email);
-                $('#password').val(localStorage.password);
-
-                $('#submit').on('click', function(){
-                    if (!navigator.onLine) {
-                        if(localStorage.loggedin != undefined) {
-                            //we have logged in before, play offline is an option. just jump in.
-                            scene('menu');
-                        } else {
-                            alert('Please connect to the internet and try again.');
-                        }
-                    } else {
-                        var ROLE = 'authenticated user';
-                        $.ajax({
-                            url: 'http://zoeandgavin.com/gamelogin',
-                            data: 'u='+$('#email').val()+'&p='+$('#password').val()+'&r='+ROLE,
-                            type: 'post',
-                            dataType: 'json',
-                            success: function(msg){
-                                if(msg.loggedin == 'true') {
-                                    localStorage.loggedin = true;
-                                    localStorage.email = $('#email').val();
-                                    localStorage.password = $('#password').val();
-                                    scene('menu');
-                                } else {
-                                    alert('Invalid email address or password. Please try again.');
-                                }
-                            },
-                            error: function(){
-                                //probably offline.
-                                if(localStorage.loggedin != undefined) {
-                                    //we have logged in before, play offline is an option. just jump in.
-                                    scene('menu');
-                                } else {
-                                    alert('An error occurred. Please try again later.');
-                                }
-                            }
-                        });
-                    }
-                    return false;
-                });
-            </script>
-        </script>
         <script id="menu" type="text/html">
-            <h1>Decompression: Episode 1</h1>
             <span class='btn' id='continue'>Continue</span>
             <span class='btn' id='newgame'>New Game</span>
-            <span class='btn' id='options'>Options</span>
+            <span class='btn' id='credits'>Credits</span>
+            <span class='btn' id='actualsize'>[&nbsp;]</span>
+            <span class='btn' id='zoom'>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
             <style>
-                h1 {
-                    position: absolute;
-                    width: 100%;
-                    text-align: center;
-                    top: 100px;
-                    color: #fff;
-                    font-size: 3em;
+                #game {
+                    background: url(img/title.gif) no-repeat center center;
+                    background-size: cover;
+                }
+                .btn {
+                    font-size: 1.25em;
+                    padding: .25em;
+                    height: auto;
                 }
                 #continue {
-                    top: 300px;
+                    top: 295px;
                     display: none;
                 }
                 #newgame {
-                    top: 400px;
+                    top: 245px;
                 }
-                #options {
-                    top: 500px;
+                #credits {
+                    top: 345px;
+                }
+                #actualsize, #zoom {
+                    top: 0;
+                    font-size: .75em;
+                    height: 2.1em;
+                    width: 100px;
+                    right: 0;
+                    left: auto;
+                }
+                #zoom {
+                    top: 1.8em;
                 }
                 #inventory {
                     display: none;
                 }
             </style>
             <script>
+                titleMusic.play();
                 if(localStorage.game != undefined && localStorage.game.length > 0) {
                     $('#continue').show();
                 } else {
                     $('#continue').hide();
                 }
                 $('#newgame').on('click', function(){
-                    scene('capsule');
+                    scene('desert');
                     states = {};
                     localStorage.game = '';
                     return false;
@@ -136,356 +74,774 @@
                     load();
                     return false;
                 });
-            </script>
-        </script>
-        <script id="skipintro" class="partial" type="text/html">
-            <span id='skip'>skip &raquo;</span>
-            <style>
-                #skip {
-                    bottom: .5em;
-                    z-index: 999;
-                    right: .5em;
-                    background: #000;
-                    border: 4px solid #fff;
-                    color: #fff;
-                    text-align: center;
-                    padding: .5em;
-                    font-size: 2em;
-                }
-            </style>
-        </script>
-        <script id="capsule" type="text/html">
-            <a id='anything'></a>
-            <style>
-                #game {
-                    background-image: url(img/scenes/capsule1.jpg?v=1);
-                }
-                #anything {
-                    height: 100%;
-                    width: 100%;
-                    top: 0;
-                    left: 0;
-                }
-                #anything.shake {
-                    -webkit-animation-duration: .75s;
-                    -webkit-animation-fill-mode: both;
-                    -webkit-animation-timing-function: ease-in-out;
-                    -webkit-animation-iteration-count:infinite;
-                    -webkit-animation-name: shake;
-                }
-                #anything.shake2 {
-                    -webkit-animation-duration: .5s !important;
-                    -webkit-animation-name: shake2;
-                }
-                #anything.shake3 {
-                    -webkit-animation-duration: .4s !important;
-                    -webkit-animation-name: shake3;
-                }
-                #anything.shake4 {
-                    -webkit-animation-duration: .3s !important;
-                    -webkit-animation-name: shake4;
-                }
-                @-webkit-keyframes shake {
-                    0%, 100% {-webkit-transform: translateX(0);}
-                    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateX(-10px);}
-                    20%, 40%, 60%, 80% {-webkit-transform: translateX(10px);}
-                }
-                @-webkit-keyframes shake2 {
-                    0%, 100% {-webkit-transform: translateX(0);}
-                    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateX(-5px);}
-                    20%, 40%, 60%, 80% {-webkit-transform: translateX(5px);}
-                }
-                @-webkit-keyframes shake3 {
-                    0%, 100% {-webkit-transform: translateX(0);}
-                    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateX(-15px);}
-                    20%, 40%, 60%, 80% {-webkit-transform: translateX(15px);}
-                }
-                @-webkit-keyframes shake4 {
-                    0%, 100% {-webkit-transform: translateX(0);}
-                    10%, 30%, 50%, 70%, 90% {-webkit-transform: translateY(-20px);}
-                    20%, 40%, 60%, 80% {-webkit-transform: translateY(20px);}
-                }
-            </style>
-            <script>
-                var stage = 0;
-                $('#inventory [data-tool=hand]').click();
-                say("OK, here goes nothing!");
-                say("Time to land this thing and get home!");
-                say("What's the worst that could happen?");
-                say("I wish these controls were in English!");
-                $('#anything').click(function(){
-                    stage++;
-                    switch(stage) {
-                        case 1:
-                            $('#anything').addClass('shake');
-                            $('#anything').css('background-image', 'url(img/scenes/capsule2.jpg?v=1)');
-                            say("That did not sound good!");
-                        break;
-                        case 2:
-                            $('#anything').css('background-image', 'url(img/scenes/capsule3.jpg?v=1)');
-                            $('#anything').addClass('shake2');
-                            say("Uh oh!");
-                        break;
-                        case 3:
-                            $('#anything').css('background-image', 'url(img/scenes/capsule4.jpg?v=1)');
-                            $('#anything').addClass('shake3');
-                            say("It's getting hot in here!");
-                        break;
-                        case 4:
-                            $('#anything').css('background-color', '#000');
-                            $('#anything').css('background-image', 'none');
-                            $('#anything').removeClass('shake');
-                            $('#anything').removeClass('shake2');
-                            $('#anything').removeClass('shake3');
-                            $('#anything').removeClass('shake4');
-                            say("AAAAAHHHHH!!");
-                        break;
-                        case 5:
-                            scene('title');
-                        break;
-                    }
+                $('#actualsize').on('click', function(){
+                    resetZoom();
+                });
+                $('#zoom').on('click', function(){
+                    CheckSizeZoom();
+                });
+                $('#credits').on('click', function(){
+                    say("Code, art by Gavin Blair. Music: \"Reawakening\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 3.0. http://creativecommons.org/licenses/by/3.0/");
                 });
             </script>
         </script>
-        <script id="title" type="text/html">
-            <a id='closetitle'></a>
-            <style>
-                #game {
-                    background: #fff url(img/title.png) no-repeat center center;
-                }
-                #closetitle {
-                    height: 100%;
-                    width: 100%;
-                    top: 0;
-                    left: 0;
-                }
-            </style>
-            <script>
-                $('#closetitle').click(function(){
-                    $('#inventory [data-tool=eye]').click();
-                    scene('beach');
-                });
-            </script>
-        </script>
-        <script id="intro1" type="text/html">
-            <a id='shuttle'></a>
-            {{>skipintro}}
-            <style>
-                #text {
-                    top: 40%;
-                    left: 5%;
-                    background: transparent;
-                }
-                #game {
-                    background: url(img/scenes/intro1.png) center center;
-                }
-                #shuttle {
-                    height: 94px;
-                    width: 140px;
-                    top: 238px;
-                    left: 808px;
-                    background-image: url(img/shuttle.png);
-                    -webkit-animation: rocketing .3s steps(5) infinite;
-                }
-                #inventory {
-                    display: none;
-                }
-                @-webkit-keyframes rocketing {
-                   from { background-position:    0 0px; }
-                     to { background-position: 0 -470px; }
-                }
-            </style>
-            <script>
-                say("Created by Gavin Blair");
-                ///**/titleMusic.play();
-                //12 seconds intro 1: shuttle rocketing to earth -- 13 seconds may be too long
-                var musicTime = requestAnimationFrame(music);
-                function music(){
-                    if(titleMusic.currentTime >= 13.5){
-                        cancelAnimationFrame(musicTime);
-                        musicTime = false;
-                        scene('intro2');
-                    }
-                    if(musicTime) musicTime = requestAnimationFrame(music);
-                }
-                $('#skip').on('click', function(){
-                    musicTime = null;
-                    scene('beach');
-                    return false;
-                });
-            </script>
-        </script>
-        <script id="intro2" type="text/html">
-            <a id='shuttle'></a>
-            {{>skipintro}}
-            <style>
-                #text {
-                    top: 40%;
-                    background: transparent;
-                    /*-webkit-animation: scrolling 13s steps(24) forwards;
-                    animation-iteration-count: 1;*/
-                }
-                /*@-webkit-keyframes scrolling {
-                   from { top: 40% }
-                     to { top: 50% }
-                }*/
-                #game {
-                    background: url(img/scenes/intro2.png) center center;
-                }
-                #shuttle {
-                    height: 132px;
-                    width: 112px;
-                    top: 100px;
-                    left: 508px;
-                    background-image: url(img/parachute.png);
-                    -webkit-animation: falling 6s forwards steps(24);
-                    animation-iteration-count: 1;
-                }
-                @-webkit-keyframes falling {
-                   from { top: 100px; }
-                     to { top: 500px; }
-                }
-                #shuttle.landing {
-                    -webkit-animation: landing 2s steps(4);
-                    animation-iteration-count: 1;
-                    background-position: 0 -660px;
-                }
-                @-webkit-keyframes landing {
-                   from { background-position:    0 -132px; }
-                     to { background-position: 0 -660px; }
-                }
-                #inventory {
-                    display: none;
-                }
-            </style>
-            <script>
-                say("Music by Brandon Blair");
-                var musicTime = requestAnimationFrame(music);
-                function music(){
+        <script id="desert" type="text/html"><!---------------------DESERT-------------------------->
+            <a id="pipe"></a>
+            <a id="lockbox"></a>
+            <a id="boulder"></a>
+            <a id="exitright"></a>
 
-                    if(titleMusic.currentTime >= 26.5){
-                        cancelAnimationFrame(musicTime);
-                        musicTime = false;
-                        scene('intro3');
-                    } else if(titleMusic.currentTime >= 21){
-                        $('#shuttle').css('background-position', 'bottom center');
-                    } else if(titleMusic.currentTime >= 19.5){
-                        $('#shuttle').css('top', '500px').addClass('landing');
-                    } else if(titleMusic.currentTime >= 16.5){
-                        $('#shuttle').css('background-position', '0 -132px');    
-                    }
-                    if(musicTime) musicTime = requestAnimationFrame(music);
+            {{>showinventory}}
+            <!---------------------DESERT STYLES-------------------------->
+            <style>
+                #game {
+                    background: url(img/scenes/desert.png) center center no-repeat;
                 }
-                $('#skip').on('click', function(){
-                    musicTime = null;
-                    scene('beach');
-                    return false;
-                });
+                #sprite {
+                    bottom: 100px;
+                }
+                #pipe {
+                    left: 50%;
+                    bottom: 100px;
+                    background: url(img/pipe.gif) center center no-repeat;
+                    height: 32px;
+                    width: 32px;
+                }
+                #lockbox {
+                    right: 25%;
+                    bottom: 100px;
+                    background: url(img/lockbox.png) center center no-repeat;
+                    height: 34px;
+                    width: 58px;
+                }
+                #lockbox.unlocked {
+                    height: 64px;
+                    width: 58px;
+                    background-image: url(img/lockbox_unlocked.png);
+                }
+                #boulder {
+                    right: 25%;
+                    bottom: 120px;
+                    background: url(img/boulder.png) center center no-repeat;
+                    height: 34px;
+                    width: 64px;
+                }
+                #boulder.moved {
+                    margin-right: -60px;
+                    margin-bottom: -20px;
+                }
+                #exitright {
+                    right: 0;
+                    width: 50px;
+                    height: 100%;
+                }
+                #psychologist.saved {
+                    left: 210px;
+                }
+                #doctor.saved {
+                    left: 360px;
+                }
+                #soldier.saved {
+                    left: 544px;
+                }
+            </style>
+            {{>regularsprite}}
+            <!---------------------DESERT SCRIPTS-------------------------->
+            <script>
+                //ready the room with any necessary states
+                if(states.pipe == "gone") {
+                    $('#pipe').remove();
+                }
+                if(states.boulder == "moved") {
+                    $('#boulder').addClass('moved');
+                }
+                if(states.comingfrom == "cave"){
+                    $('#sprite').css('left', 'auto');
+                    $('#sprite').css('right', '0');
+                } else {
+                    $('#sprite').addClass('right');
+                }
+                if(states.lockbox == "unlocked"){
+                    $('#lockbox').addClass('unlocked');
+                }
+
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        case 'pipe':
+                            switch(tool) {
+                                case 'eye':
+                                    say("This broken pipe should come in handy!");
+                                break;
+                                case 'hand':
+                                    states.pipe = "gone";
+                                    $('#pipe').remove();
+                                    add_tool('pipe'); //add_tool saves the game, so do states stuff before!
+                                break;
+                            }
+                        break;
+                        case 'lockbox':
+                            switch(tool) {
+                                case 'eye':
+                                    if(states.lockbox != "unlocked") {
+                                        say("It's a large medical lockbox.");
+                                    } else {
+                                        say("There are some pills inside.");
+                                    }
+                                break;
+                                case 'hand':
+                                    if(states.boulder != "moved") {
+                                        say("It's locked and there's a giant boulder on top of it!");
+                                    } else if(states.lockbox != "unlocked") {
+                                        say("It's locked.");
+                                    } else if(states.pills != "taken") {
+                                        states.pills = "taken";
+                                        add_tool('pills');
+                                    }
+                                break;
+                                case 'pipe':
+                                    say("I can't unlock the box with this pipe. I'll need the key.");
+                                break;
+                                case 'key':
+                                    if(states.boulder == "moved") {
+                                        states.lockbox = "unlocked";
+                                        $('#lockbox').addClass('unlocked');
+                                        lose_tool('key');
+                                    } else {
+                                        say("I can't get at the lockbox with that boulder on it.");
+                                    }
+                                break;
+                            }
+                        break;
+                        case 'boulder':
+                            switch(tool) {
+                                case 'eye':
+                                    if(states.boulder !== "moved") {
+                                        say("That's a nice boulder. Something is trapped underneath it.");
+                                    } else {
+                                        say("That's a nice boulder.");
+                                    }
+                                break;
+                                case 'hand':
+                                    if(states.boulder !== "moved") {
+                                        say("Even with my augmented limbs I can't move it without some torque!");
+                                    } else {
+                                        say("I think the boulder has had enough excitement for now.");
+                                    }
+                                break;
+                                case 'pipe':
+                                    if(states.boulder !== "moved") {
+                                        say("I used the pipe as a lever to remove the boulder.");
+                                        $('#boulder').addClass('moved');
+                                        states.boulder = "moved";
+                                        save();
+                                    } else {
+                                        say("I think the boulder has had enough excitement for now.");
+                                    }
+                                break;
+                            }
+                        break;
+                        case 'exitright':
+                            states.comingfrom = "desert";
+                            scene('cave');
+                        break;
+                    }
+                }
             </script>
         </script>
-        <script id="intro3" type="text/html">
-            <div id='mover'><a id='shuttle' class='sinking'></a></div>
-            <div id='foreground'></div>
-            <div id='swimming'><a id='swimmer'></a></div>
-            {{>skipintro}}
+        <script id="cave" type="text/html"><!---------------------CAVE-------------------------->
+            <a id="soldier_cave"></a>
+            <a id="exitleft"></a>
+            <a id="exitright"></a>
+            <a id="robe"></a>
+            {{>showinventory}}
+            <!---------------------CAVE STYLES-------------------------->
             <style>
-                #text {
-                    top: 20%;
-                    background: transparent;
-                    -webkit-animation: scrolling 6s steps(24) forwards;
-                    animation-iteration-count: 1;
-                }
-                @-webkit-keyframes scrolling {
-                   from { top: 40% }
-                     to { top: 10% }
-                }
                 #game {
-                    background: url(img/scenes/intro3.png) center center;
+                    background: url(img/scenes/cave.png) center center no-repeat;
+                }
+                #sprite {
+                    bottom: 100px;
+                }
+                #soldier_cave {
+                    height: 52px;
+                    width: 42px;
+                    left: 305px;
+                    bottom: 116px;
+                    background: url(img/soldier.gif) no-repeat;
+                }
+                #exitleft {
+                    left: 0;
+                    width: 50px;
+                    height: 100%;
+                }
+                #exitright {
+                    right: 0;
+                    width: 50px;
+                    height: 100%;
+                }
+                #robe {
+                    height: 28px;
+                    width: 94px;
+                    background: url(img/robe.png) no-repeat;
+                    bottom: 75px;
+                    right: 100px;
+                }
+                #psychologist.saved {
+                    left: 107px;
+                }
+                #doctor.saved {
+                    left: 220px;
+                }
+                #soldier.saved {
+                    left: 305px;
+                }
+                #drones.saved {
+                    left: 305px;
+                    bottom: auto;
+                    top: 30px;
+                }
+            </style>
+            {{>regularsprite}}
+            <!---------------------CAVE SCRIPTS-------------------------->
+            <script>
+                //ready the room with any necessary states
+                if(states.soldier_askoptions === undefined) {
+                    states.soldier_askoptions = {
+                        soldier_who: "My name is Arthur. Who are you?",
+                        soldier_hurt: "Are you hurt?",
+                        soldier_parents: "Where are your parents?",
+                        soldier_holding: "What are you holding?",
+                        soldier_join: "Come with me if you want to live",
+                        soldier_bye: "Goodbye."
+                    };
+                }
+                if(states.robe == "gone"){
+                    $('#robe').remove();
+                }
+                if(states.comingfrom == "spikes") {
+                    $('#sprite').removeClass('right');
+                    $('#sprite').css('right', '0');
+                    $('#sprite').css('left', 'auto');
+                }
+                if(states.soldier == "saved"){
+                    $('#soldier_cave').remove();
+                }
+
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        case 'robe':
+                            switch(tool){
+                                case 'eye':
+                                    say("It's... a bath robe?");
+                                break;
+                                case 'hand':
+                                    $('#robe').remove();
+                                    states.robe = "gone";
+                                    add_tool('robe');
+                                break;
+                                case 'pipe':
+                                    say("Normally I'd be worried about how sanitary it is to pick up a robe with bare hands, considering the circumstances (and my augmented limbs) I don't think I have to worry about it.");
+                                break;
+                            }
+                        break;
+                        case 'soldier_cave':
+                            switch(tool){
+                                case 'pipe':
+                                    say("I don't think I need to attack this little girl.");
+                                break;
+                                case 'pills':
+                                    say("Here, take these pills. You will feel instantly better.");
+                                    states.soldier = "saved";
+                                    $('#soldier_cave').remove();
+                                    $('#soldier').addClass('saved');
+                                    lose_tool("pills");
+                                break;
+                                case 'eye':
+                                    say("It's a young girl.");
+                                break;
+                                case 'hand':
+                                    ask(states.soldier_askoptions);
+                                    $('#text span').on('click', function(){
+                                        var t = $(this).attr('data-say');
+                                        switch(t){
+                                            case 'soldier_who':
+                                                delete states.soldier_askoptions[t];
+                                                say("My name is Alicia. I've been hiding in this cave since we crashed.", '#aaaaaa');
+                                            break;
+                                            case 'soldier_hurt':
+                                                delete states.soldier_askoptions[t];
+                                                say("I actually can't move much and my skin is turning green! Other than that I think I'm fine...", '#aaaaaa');
+                                            break;
+                                            case 'soldier_parents':
+                                                delete states.soldier_askoptions[t];
+                                                say("Only my mom was on board, but I don't think she got off the ship in time...", '#aaaaaa');
+                                            break;
+                                            case 'soldier_holding':
+                                                delete states.soldier_askoptions[t];
+                                                say("I'm holding the controller for my mom's drones. Let me know if you find them!", '#aaaaaa');
+                                            break;
+                                            case 'soldier_join':
+                                                say("I'd love to, but I'm too sick to move!", '#aaaaaa');
+                                            break;
+                                            case 'soldier_bye':
+                                                say("Find my drones!", '#aaaaaa');
+                                            break;
+                                        }
+                                        save();
+                                    });
+                                break;
+                            }
+                        break;
+                        case 'exitleft':
+                            states.comingfrom = 'cave';
+                            scene('desert');
+                        break;
+                        case 'exitright':
+                            states.comingfrom = 'cave';
+                            scene('spikes');
+                        break;
+                    }
+                }
+            </script>
+        </script>
+        <script id="spikes" type="text/html"><!---------------------SPIKES-------------------------->
+            <div id="foreground"></div>
+            <a id="exitleft"></a>
+            <a id="exitright"></a>
+            <a id="shower" class="collapsed"></a>
+            {{>showinventory}}
+            <!---------------------SPIKES STYLES-------------------------->
+            <style>
+                #game {
+                    background: url(img/scenes/spikes.png?v=1) center center no-repeat;
                 }
                 #foreground {
                     position: absolute;
                     z-index: 999;
                     height: 100%;
                     width: 100%;
-                    background: url(img/intro3_fg.png) center center;
+                    pointer-events: none;
+                    background: url(img/scenes/spikes_foreground.png?v=4) center center no-repeat;
                 }
-                #shuttle {
-                    height: 72px;
-                    width: 80px;
-                    top: 0;
+                #sprite {
+                    bottom: 100px;
+                }
+                #exitleft {
                     left: 0;
-                    background-image: url(img/sinking.png);
-                }
-                #shuttle.sinking {
-                    -webkit-animation: sinking 1s steps(5) infinite;
-                }
-                @-webkit-keyframes sinking {
-                   from { background-position: 0 0; }
-                     to { background-position: 0 -360px; }
-                }
-                #swimming.shown {
-                    position: absolute;
-                    height: 36px;
-                    width: 28px;
-                    top: 500px;
-                    left: 508px;
-                    -webkit-animation: floating 6s steps(24) forwards;
-                    animation-iteration-count: 1;
-                }
-                @-webkit-keyframes floating {
-                   from { top: 500px; }
-                     to { top: -40px; }
-                }
-                .shown #swimmer {
+                    width: 50px;
                     height: 100%;
-                    width: 100%;
-                    top: 0;
-                    left: 0;
-                    background-image: url(img/swimming.png);
-                    -webkit-animation: swimming .3s steps(2) infinite;
                 }
-                @-webkit-keyframes swimming {
-                   from { background-position: 0 0; }
-                     to { background-position: 0 -72px; }
+                #exitright {
+                    right: 0;
+                    width: 50px;
+                    height: 100%;
                 }
-                #mover {
-                    position: absolute;
-                    top: 100px;
-                    left: 508px;
-                    height: 72px;
-                    width: 80px;
-                    -webkit-animation: falling 6s forwards steps(24);
-                    animation-iteration-count: 1;
+                #shower {
+                    height: 174px;
+                    width: 88px;
+                    left: 466px;
+                    bottom: 100px;
+                    background: url(img/shower_collapsed.png) no-repeat;
                 }
-                @-webkit-keyframes falling {
-                    from { top: 100px; }
-                    to { top: 500px; }
+                #psychologist.saved {
+                    left: 427px;
                 }
-                #inventory {
-                    display: none;
+                #doctor.saved {
+                    left: 220px;
+                }
+                #soldier.saved {
+                    left: 55px;
                 }
             </style>
+            {{>regularsprite}}
+            <!---------------------SPIKES SCRIPTS-------------------------->
             <script>
-                say("Artwork by Gavin Blair");
-                var musicTime = requestAnimationFrame(music);
-                function music(){
-                    if(titleMusic.currentTime >= 39.5){
-                        cancelAnimationFrame(musicTime);
-                        musicTime = false;
-                        titleMusic.pause();
-                        scene('beach');
-                    } else if(titleMusic.currentTime >= 32.5){
-                        $('#shuttle').removeClass('sinking');
-                        $('#shuttle').css('background', 'url(img/underwater.png) no-repeat bottom center');
-                        $('#swimming').addClass('shown');
-                    }
-                    if(musicTime) musicTime = requestAnimationFrame(music);
+                //ready the room with any necessary states
+                if(states.shower_askoptions === undefined) {
+                    states.shower_askoptions = {
+                        hello: "...Hello?"
+                    };
                 }
-                $('#skip').on('click', function(){
-                    musicTime = null;
-                    scene('beach');
-                    return false;
+                if(states.comingfrom == "cliff"){
+                    $("#sprite").removeClass("right").css('left', 'auto').css('right', '0');
+                }
+
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        case 'exitleft':
+                            states.comingfrom = 'spikes';
+                            scene('cave');
+                        break;
+                        case 'exitright':
+                            states.comingfrom = 'spikes';
+                            scene('cliff');
+                        break;
+                        case 'shower':
+                            switch(tool){
+                                case 'eye':
+                                    say("It's a battered shower stall. It looks like it fell out of the ship when we crashed.");
+                                break;
+                                case 'hand':
+                                    if(states.psychologist != "saved") {
+                                        ask(states.shower_askoptions);
+                                        $('#text span').on('click', function(){
+                                            var t = $(this).attr('data-say');
+                                            switch(t){
+                                                case 'hello':
+                                                    say("Dude! Help! I'm trapped in this shower stall! Did we crash or something?","#456bfb");
+                                                    states.shower_askoptions = {
+                                                        yes: "Yes... Don't worry, I'll get you out of there!",
+                                                        hurt: "Are you hurt?",
+                                                        who: "Who are you?",
+                                                    };
+                                                break;
+                                                case 'yes':
+                                                    say("Don't open the door yet, man, I need my robe first.","#456bfb");
+                                                    states.shower_askoptions.yes = "Don't worry, I'll get you out of there!";
+                                                break;
+                                                case 'hurt':
+                                                    say("No way, man. It was a wild ride, yet I remain unscathed.","#456bfb");
+                                                break;
+                                                case 'who':
+                                                    say("I'm Brian, the ship's psychologist. You may think it was a bad idea to have a shower as the ship was crashing, but that's like, just your opinion, man.","#456bfb");
+                                                break;
+                                            }
+                                        });
+                                    } else {
+                                        say("Now is not the time for a shower!");
+                                    }
+                                break;
+                                case 'pipe':
+                                    say("WAIT! I need my robe first.", "#456bfb");
+                                break;
+                                case 'robe':
+                                    say("Thanks, man. The door isn't jammed or anything, I just didn't want to leave without my robe.", '#456bfb');
+                                    $('#psychologist').addClass('saved');
+                                    states.psychologist = "saved";
+                                    lose_tool('robe');
+                                break;
+                            }
+                        break;
+                    }
+                }
+            </script>
+        </script>
+        <script id="cliff" type="text/html"><!---------------------CLIFF-------------------------->
+            <a id="exitleft"></a>
+            <a id="exitright"></a>
+            <a id="doctor_shock"></a>
+            <a id="drones_broken"></a>
+            {{>showinventory}}
+            <!---------------------CLIFF STYLES-------------------------->
+            <style>
+                #game {
+                    background: url(img/scenes/cliff.png) center center no-repeat;
+                }
+                #sprite {
+                    bottom: 100px;
+                }
+                #exitleft {
+                    left: 0;
+                    width: 50px;
+                    height: 100%;
+                }
+                #exitright {
+                    right: 0;
+                    width: 50px;
+                    height: 100%;
+                }
+                #doctor_shock {
+                    bottom: 116px;
+                    height: 112px;
+                    width: 30px;
+                    right: 150px;
+                    background: url(img/doctor.gif) no-repeat;
+                }
+                #psychologist.saved {
+                    left: 427px;
+                }
+                #doctor.saved {
+                    right: 150px;
+                    left: auto;
+                }
+                #soldier.saved {
+                    left: 55px;
+                }
+                #drones_broken {
+                    height: 40px;
+                    width: 150px;
+                    background: url(img/drones_broken.gif) no-repeat;
+                    bottom: 73px;
+                    left: 160px;
+                    z-index: 99;
+                }
+                #drones_broken.gone {
+                    background-image: url(img/drones_gone.gif);
+                }
+            </style>
+            {{>regularsprite}}
+            <!---------------------CLIFF SCRIPTS-------------------------->
+            <script>
+                //ready the room with any necessary states
+                if(states.shock_askoptions === undefined) {
+                    states.shock_askoptions = {
+                        hello: "Doctor?"
+                    };
+                }
+                if(states.doctor == "saved"){
+                    $('#doctor_shock').remove();
+                }
+                if(states.drones == 'saved') {
+                    $('#drones_broken').addClass('gone');
+                }
+                if(states.comingfrom == 'wreckage') {
+                    $('#sprite').css('right', '0').css('left', 'auto');
+                }
+
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        case 'drones_broken':
+                            switch(tool) {
+                                case 'eye':
+                                    say("It's a bunch of drones. Most of them are smashed.");
+                                break;
+                                case 'hand':
+                                    if(states.soldier != "saved") {
+                                        say("Three of them are still in working order, but I have no way of controlling them.");
+                                    } else {
+                                        if(states.drones != "saved") {
+                                            $('#drones_broken').addClass('gone');
+                                            $('#drones').addClass('saved');
+                                            states.drones = 'saved';
+                                            say("My mom's drones! Three of them are still working.", "#aaaaaa");
+                                            save();
+                                        } else {
+                                            say("There is nothing of value left in that pile of junk.");
+                                        }
+                                    }
+                                break;
+                            }
+                        break;
+                        case 'exitleft':
+                            states.comingfrom = 'cliff';
+                            scene('spikes');
+                        break;
+                        case 'exitright':
+                            states.comingfrom = 'cliff';
+                            scene('wreckage');
+                        break;
+                        case 'doctor_shock':
+                            switch(tool){
+                                case 'eye':
+                                    say("It's the ship's doctor.");
+                                break;
+                                case 'hand':
+                                    ask(states.shock_askoptions);
+                                    $('#text span').on('click', function(){
+                                        var t = $(this).attr('data-say');
+                                        switch(t){
+                                            case 'hello':
+                                                say("He isn't responding. He looks like he is in shock.");
+                                            break;
+                                        }
+                                    });
+                                break;
+                                case 'pipe':
+                                break;
+                            }
+                        break;
+                    }
+                }
+            </script>
+        </script>
+        <script id="wreckage" type="text/html"><!---------------------WRECKAGE-------------------------->
+            <a id="exitleft"></a>
+            <a id="exitright"></a>
+            <a id="shipwreck"></a>
+            <!--a id="exitright"></a-->
+            <a id="robot" class='trapped'></a>
+            <a id="wildanimal"></a>
+            <a id="areaofcontrol"></a>
+            {{>showinventory}}
+            <!---------------------WRECKAGE STYLES-------------------------->
+            <style>
+                #game {
+                    background: url(img/scenes/shipwreck.png) center center no-repeat;
+                }
+                #sprite {
+                    bottom: 100px;
+                }
+                #exitleft {
+                    left: 0;
+                    width: 50px;
+                    height: 100%;
+                }
+                #exitright {
+                    right: 0;
+                    width: 50px;
+                    height: 100%;
+                }
+                #robot {
+                    left: 456px;
+                    bottom: 92px;
+                    z-index: 10;
+                }
+                #robot.trapped {
+                    display: block;
+                }
+                #wildanimal {
+                    z-index: 10;
+                    height: 98px;
+                    width: 66px;
+                    background: url(img/creepyassdeer.gif) no-repeat;
+                    left: 406px;
+                    bottom: 76px;
+                }
+                #soldier.saved {
+                    z-index: 10;
+                    bottom: 62px;
+                    left: 38px;
+                }
+                #doctor.saved {
+                    z-index: 10;
+                    bottom: 48px;
+                    left: 98px;
+                }
+                #psychologist.saved {
+                    z-index: 10;
+                    bottom: 36px;
+                    left: 216px;
+                }
+                #shipwreck {
+                    height: 250px;
+                    width: 360px;
+                    top: 0;
+                    left: 60px;
+                    z-index: 0;
+                }
+                #areaofcontrol {
+                    z-index: 11;
+                    height: 100%;
+                    width: 280px;
+                    right: 0;
+                    top: 0;
+                }
+            </style>
+            {{>regularsprite}}
+            <!---------------------WRECKAGE SCRIPTS-------------------------->
+            <script>
+                //ready the room with any necessary states
+                if(states.beast == "slain"){
+                    $('#wildanimal').remove();
+                    $('#areaofcontrol').remove();
+                }
+
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        case 'exitleft':
+                            states.comingfrom = 'wreckage';
+                            scene('cliff');
+                        break;
+                        case 'exitright':
+                            states.comingfrom = 'wreckage';
+                            //you win!!
+                            scene('youwin');
+                        break;
+                        case 'areaofcontrol':
+                            say("There's no way I'm getting close to that beast! It looks like it would tear me apart.");
+                        break;
+                        case 'shipwreck':
+                            switch(tool) {
+                                case 'eye':
+                                    say("That's our ship. It's a wonder that any of us are alive!");
+                                break;
+                                case 'hand':
+                                    say("We can start salvaging supplies from the ship later - first we have to deal with the beast!");
+                                break;
+                            }
+                        break;
+                        case 'robot':
+                            switch(tool) {
+                                case 'eye':
+                                    say("Hey, it's the ship's android! It looks like it is badly damaged.");
+                                break;
+                                case 'hand':
+                                    say("This robot will require significant repairs before it can be useful.");
+                                break;
+                            }
+                        break;
+                    }
+                }
+            </script>
+        </script>
+        <script id="youwin" type="text/html"><!---------------------YOUWIN-------------------------->
+            <a id="url"></a>
+            <!---------------------YOUWIN STYLES-------------------------->
+            <style>
+                #game {
+                    background: url(img/scenes/youwin.png) center center no-repeat;
+                }
+                #url {
+                    height: 150px;
+                    width: 100%;
+                    bottom: 0;
+                    left: 0;
+                }
+            </style>
+            <!---------------------YOUWIN SCRIPTS-------------------------->
+            <script>
+                //ready the room with any necessary states
+                $('#url').click(function(){
+                    window.location = "http://www.zoeandgavin.com/radio-silence";
                 });
+            </script>
+        </script>
+        <script id="template" type="text/html"><!---------------------TEMPLATE-------------------------->
+            <a id="exitleft"></a>
+            <a id="exitright"></a>
+            {{>showinventory}}
+            <!---------------------TEMPLATE STYLES-------------------------->
+            <style>
+                #game {
+                    background: url(img/scenes/.png) center center no-repeat;
+                }
+                #sprite {
+                    bottom: 100px;
+                }
+                #exitleft {
+                    left: 0;
+                    width: 50px;
+                    height: 100%;
+                }
+                #exitright {
+                    right: 0;
+                    width: 50px;
+                    height: 100%;
+                }
+            </style>
+            {{>regularsprite}}
+            <!---------------------TEMPLATE SCRIPTS-------------------------->
+            <script>
+                //ready the room with any necessary states
+
+                function arrivedat(id){
+                    var tool = current_tool();
+                    switch(id){
+                        case 'exitleft':
+                            states.comingfrom = 'cave';
+                            scene('cave');
+                        break;
+                        case 'exitright':
+                            states.comingfrom = 'cave';
+                            //scene('//');
+                        break;
+                    }
+                }
             </script>
         </script>
         <script id="showinventory" class="partial" type="text/html">
@@ -494,906 +850,90 @@
                     display: block;
                 }
                 #inventory [data-tool=key]{
-                    background-image: url(img/bigkey.png);
+                    background-image: url(img/key.png);
                 }
                 #inventory [data-tool=sword]{
                     background-image: url(img/sword.png);
                 }
             </style>
         </script>
-        <script id="template" type="text/html">
+        <script id="regularsprite" class="partial" type="text/html">
             <a id="sprite"></a>
-            {{>showinventory}}
+            <a id="psychologist"></a>
+            <a id="soldier"></a>
+            <a id="doctor"></a>
+            <a id="robot"></a>
+            <a id="drones"></a>
             <style>
-                #game {
-                    background: url(img/scenes/.png) center center;
+                #psychologist,
+                #soldier,
+                #doctor,
+                #robot,
+                #drones {
+                    display: none;
                 }
-                #sprite {
-                    left: 20px;
-                    bottom: 128px;
-                    height: 199px;
-                    width: 51px;
-                    background: url(img/sprite.png) 0 0;
-                    -webkit-animation: standing 12s steps(2) infinite;
+                #psychologist.saved,
+                #soldier.saved,
+                #doctor.saved,
+                #robot.saved,
+                #drones.saved {
+                    display: block;
                 }
-                @-webkit-keyframes standing {
-                   from { background-position:    0 0px; }
-                     to { background-position: 0 -400px; }
+                #psychologist {
+                    bottom: 125px;
+                    height: 116px;
+                    width: 32px;
+                    left: 4px;
+                    background: url(img/psychologist.gif) no-repeat;
                 }
-                #sprite.walking {
-                    background-image: url(img/walking.png);
-                    width: 59px;
-                    -webkit-animation: walking .8s steps(5) infinite;
+                #doctor {
+                    bottom: 116px;
+                    height: 112px;
+                    width: 30px;
+                    left: 25px;
+                    background: url(img/doctor.gif) no-repeat;
                 }
-                @-webkit-keyframes walking {
-                   from { background-position:    0 0px; }
-                     to { background-position:  0 -1000px; }
+                #soldier {
+                    height: 78px;
+                    width: 26px;
+                    left: 71px;
+                    bottom: 112px;
+                    background: url(img/soldier_standing.gif) no-repeat;
                 }
-            </style>
-            <script>
-                //ready the room with any necessary states
-                
-
-                function arrivedat(id){
-                    var tool = current_tool();
-                    switch(id){
-                        
-                    }
+                #robot {
+                    height: 92px;
+                    width: 44px;
+                    background: url(img/robot.gif) no-repeat;
                 }
-            </script>
-        </script>
-        <script id="beach" type="text/html">
-            <a id="sprite" class="reflection"></a>
-            <a id="bird"></a>
-            <a id="fireplace"></a>
-            <div class='flies'>
-                <span class="fly"></span>
-                <span class="fly"></span>
-                <span class="fly"></span>
-                <span class="fly"></span>
-            </div>
-            <div id='foreground'></div>
-            <a id="ocean"></a>
-            <a id="toforest"></a>
-            {{>showinventory}}
-            <style>
-                #fireplace {
-                    background: url(img/fireplace.png);
+                #drones {
+                    bottom: 216px;
+                    left: 56px;
                     height: 76px;
-                    width: 65px;
-                    top: 417px;
-                    left: 417px;
-                    z-index: 8;
-                }
-                #bird, .fly {
-                    top: 100px;
-                    left: 170px;
-                    background: url(img/bird.gif);
-                    height: 31px;
-                    width: 35px;
-                }
-                .fly {
-                    background: url(img/fly.gif);
-                    top: 400px;
-                    left: 400px;
-                    cursor: default;
-                    pointer-events: none;
-                }
-                .fly:nth-child(2){
-                    top: 350px;
-                    left: 300px;
-                     -moz-transform: scaleX(-1);
-                    -o-transform: scaleX(-1);
-                    -webkit-transform: scaleX(-1);
-                    transform: scaleX(-1);
-                    filter: FlipH;
-                    -ms-filter: "FlipH";
-                }
-                .fly:nth-child(3){
-                    top: 375px;
-                    left: 100px;
-                    -moz-transform: scaleY(-1);
-                    -o-transform: scaleY(-1);
-                    -webkit-transform: scaleY(-1);
-                    transform: scaleY(-1);
-                    filter: FlipV;
-                    -ms-filter: "FlipV";
-
-                }
-                .fly:nth-child(4){
-                    top: 100px;
-                    left: 220px;
-                }
-                #ocean {
-                    right: 0;
-                    width: 250px;
-                    height: 100%;
-                    top: 0;
-                }
-                #toforest {
-                    left: 0;
-                    width: 70px;
-                    height: 100%;
-                    top: 0;
-                }
-                #game {
-                    background: url(img/scenes/beach.png) center center;
-                }
-                #foreground {
-                    pointer-events:none;
-                    position: absolute;
-                    z-index: 999;
-                    height: 100%;
-                    width: 100%;
-                    background: url(img/beach_foreground.png) center center;
-                    z-index: 10;
-                }
-                #sprite {
-                    cursor: pointer;
-                    z-index: 9;
-                    left: 790px;
-                    bottom: 83px;
-                    height: 203px;
-                    width: 25px;
-                    background: url(img/sprite_reflection.png) 0 0 no-repeat;
-                    background-size: 25px 406px;
-                    -webkit-animation: standing_reflection 12s steps(2) infinite;
-                }
-                @-webkit-keyframes standing_reflection {
-                   from { background-position:    0 0px; }
-                     to { background-position: 0 -406px; }
-                }
-                #sprite.walking {
-                    background-image: url(img/walking_reflection.png);
-                    width: 29px;
-                    background-size: 30px 1016px;
-                    -webkit-animation: walking_reflection .8s steps(5) infinite;
-                }
-                @-webkit-keyframes walking_reflection {
-                   from { background-position:    0 0px; }
-                     to { background-position:  0 -1016px; }
-                }
-
-            </style>
-            <script>
-                //ready the room with any necessary states
-                states.speed = 8;
-                if(states.comingfrom == "forest"){
-                    $('#sprite').css('left', '10px');
-                }
-                if(!states.monologuecomplete) {
-                    monologue();
-                    $('#text').on('click', function(){
-                        if(!states.monologuecomplete) {
-                            var t = $('#text span').attr('data-say');
-                            switch(t){
-                                case 'one':
-                                    ask({two: "Now I just have to wait around for NASA to pick me up!"});
-                                break;
-                                case 'two':
-                                    ask({three: "I wonder where I am? Probably somewhere on the west coast - Washington maybe?"});
-                                break;
-                                case 'three':
-                                    ask({last: "I hope I'm not too far from NASA."});
-                                break;
-                                case 'last':
-                                    say("\"I'm getting hungry. I wonder if there is some food nearby.\"");
-                                    states.monologuecomplete = true;
-                                break;
-                                default:
-                                    say("");
-                                break;
-                            }
-                            return false;
-                        }
-                    });
-                }
-                function monologue(){
-                    ask({one: "WOOO! I can't believe I survived that crash!"});
-                    states.monologuecomplete = false;
-                }
-                function arrivedat(id){
-                    var tool = current_tool();
-                    switch(id){
-                        case 'sprite':
-                            monologue();
-                        break;
-                        case 'ocean':
-                            scene('ocean');
-                        break;
-                        case 'toforest':
-                            scene('forest');
-                            states.comingfrom = 'beach';
-                        break;
-                        case 'bird':
-                            switch(tool){
-                                case 'eye':
-                                    say("I've never seen a bird like that before. It's beautiful.");
-                                break;
-                                case 'hand':
-                                    say("I can't reach it.");
-                                break;
-                                case 'stick':
-                                    say("Let's leave the bird alone.");
-                                break;
-                                case 'rock':
-                                    say("I COULD throw this rock at that bird, but what would that accomplish?");
-                                break;
-                            }
-                        break;
-                        case 'fireplace':
-                            if(!hastool('gas')) {
-                                switch(tool){
-                                    case 'eye':
-                                        say("This looks like it would be a nice place for a campfire.");
-                                    break;
-                                    case 'hand':
-                                        say("I'm going to leave that where it is.");
-                                    break;
-                                    case 'stick':
-                                        say("This stick would burn, but it is so sturdy! I'm sure it will be more useful elsewhere.");
-                                    break;
-                                    case 'rock':
-                                        say("I COULD put this rock with those other rocks, but let's hang onto it just in case it comes in handy elsewhere.");
-                                    break;
-                                }
-                            }
-                        break;
-                    }
-                }
-            </script>
-        </script>
-        <script id="forest" type="text/html">
-            <a id="sprite"></a>
-            <a id="tobeach"></a>
-            <a id="toshack"></a>
-            <a id="stick"></a>
-            <a id="rock"></a>
-            <a id="log"></a>
-            {{>showinventory}}
-            <style>
-                #game {
-                    background: url(img/scenes/forest.png) center center;
-                }
-                #stick {
-                    top: 436px;
-                    left: 546px;
-                    height: 40px;
-                    width: 364px;
-                    z-index: 8;
-                    background: url(img/stick.png);
-                }
-                #rock {
-                    height: 40px;
-                    width: 60px;
-                    top: 430px;
-                    left: 298px;
-                    background: url(img/rock.png);
-                    z-index: 10;
-                }
-                #log {
-                    height: 70px;
-                    width: 160px;
-                    top: 381px;
-                    left: 100px;
-                    background: url(img/log.png);
-                    z-index: 10;
-                }
-                #tobeach {
-                    right: 0;
-                    width: 70px;
-                    height: 100%;
-                    top: 0;
-                }
-                #toshack {
-                    left: 0;
-                    width: 70px;
-                    height: 100%;
-                    top: 0;
-                }
-                #sprite {
-                    right: 20px;
-                    bottom: 196px;
-                    height: 200px;
-                    width: 51px;
-                    background: url(img/sprite.png) 0 0;
-                    -webkit-animation: standing 12s steps(2) infinite;
-                }
-                @-webkit-keyframes standing {
-                   from { background-position:    0 0px; }
-                     to { background-position: 0 -400px; }
-                }
-                #sprite.walking {
-                    background-image: url(img/walking.png);
-                    width: 59px;
-                    -webkit-animation: walking .8s steps(5) infinite;
-                }
-                @-webkit-keyframes walking {
-                   from { background-position:    0 0px; }
-                     to { background-position:  0 -1000px; }
-                }
-            </style>
-            <script>
-                //ready the room with any necessary states
-                states.speed = 10;
-                if(states.comingfrom == 'shack') {
-                    $('#sprite').css('left', '20px');
-                }
-                if(hastool('rock') || states.shackopen){
-                    $("#rock").hide();
-                }
-                if(hastool("stick")){
-                    $("#stick").hide();
-                }
-                if(hastool("log")){
-                    $("#log").hide();
-                }
-                function arrivedat(id){
-                    var tool = current_tool();
-                    switch(id){
-                        case 'tobeach':
-                            states.comingfrom = "forest";
-                            scene('beach');
-                        break;
-                        case 'toshack':
-                            states.comingfrom = "forest";
-                            scene('shack');
-                        break;
-                        case 'stick':
-                            switch(tool){
-                                case 'eye':
-                                    say("It looks like a sturdy stick.");
-                                break;
-                                case 'hand':
-                                    say("This could come in handy.");
-                                    add_tool("stick");
-                                    $("#stick").hide();
-                                break;
-                                case 'rock':
-                                    say("I COULD smash that stick with this rock... But why?");
-                                break;
-                            }
-                        break;
-                        case 'rock':
-                            switch(tool){
-                                case 'eye':
-                                    say("Now THAT is a nice rock.");
-                                break;
-                                case 'hand':
-                                    say("This could come in handy.");
-                                    add_tool("rock");
-                                    $("#rock").hide();
-                                break;
-                                case 'stick':
-                                    say("Poking the rock with the stick accomplished... nothing.");
-                                break;
-                            }
-                        break;
-                        case 'log':
-                            switch(tool){
-                                case 'eye':
-                                    say("It's a dry log.");
-                                break;
-                                case 'hand':
-                                    say("This could come in handy.");
-                                    add_tool("log");
-                                    $("#log").hide();
-                                break;
-                                case 'stick':
-                                    say("Poking the log with the stick accomplished... nothing.");
-                                break;
-                                case 'jerrycan':
-                                    say("Let's not do this here.");
-                                break;
-                                case 'rock':
-                                    say("I smacked the log with the rock, and it made a predictable sound.");
-                                break;
-                            }
-                        break;
-                    }
-                }
-            </script>
-        </script>
-        <script id="shack" type="text/html">
-            <a id="sprite"></a>
-            <a id="door"></a>
-            <a id="jerrycan"></a>
-            <a id="toforest"></a>
-            {{>showinventory}}
-            <style>
-                #game {
-                    background: url(img/scenes/shack.png) center center;
-                }
-                #door {
-                    height: 254px;
-                    width: 180px;
-                    top: 253px;
-                    left: 489px;
-                    z-index: 8;
-                    background: url(img/shack_door.png) center center;
-                }
-                #toforest {
-                    right: 0;
-                    width: 70px;
-                    height: 100%;
-                    top: 0;
-                }
-                #door.open {
-                    background: url(img/shack_door_open.png) center center;
-                }
-                #jerrycan {
-                    height: 70px;
-                    z-index: 8;
-                    width: 55px;
-                    top: 452px;
-                    left: 185px;
-                    background: url(img/jerrycan.png) center center;
-                }
-                #sprite {
-                    right: 20px;
-                    bottom: 115px;
-                    height: 200px;
-                    width: 51px;
-                    background: url(img/sprite.png) 0 0;
-                    -webkit-animation: standing 12s steps(2) infinite;
-                }
-                @-webkit-keyframes standing {
-                   from { background-position:    0 0px; }
-                     to { background-position: 0 -400px; }
-                }
-                #sprite.walking {
-                    background-image: url(img/walking.png);
-                    width: 59px;
-                    -webkit-animation: walking .8s steps(5) infinite;
-                }
-                @-webkit-keyframes walking {
-                   from { background-position:    0 0px; }
-                     to { background-position:  0 -1000px; }
-                }
-            </style>
-            <script>
-                //ready the room with any necessary states
-                states.speed = 10;
-                if(states.comingfrom == 'kitchen'){
-                    $('#sprite').css('left', '489px');
-                }
-                if(states.shackopen) {
-                    $('#door').addClass('open');
-                }
-                if(hastool('jerrycan')){
-                    $('#jerrycan').hide();
-                }
-                function arrivedat(id){
-                    var tool = current_tool();
-                    switch(id){
-                        case 'door':
-                            switch(tool){
-                                case 'rock':
-                                    lose_tool('rock');
-                                    say("I smashed the handle with the rock, and the door easily slid open.");
-                                    $('#door').addClass('open');
-                                    states.shackopen = true;
-                                break;
-                                case 'stick':
-                                    if(!states.shackopen){
-                                        say("It's a sturdy stick, but it's no match for a locked sliding door.");
-                                    } else {
-                                        say("Waving the stick around tells me that yes, the door is in fact open.");
-                                    }
-                                break;
-                                case 'eye':
-                                    if(!states.shackopen){
-                                        say("It's a sliding door.");
-                                    } else {
-                                        //enter shack
-                                        states.comingfrom = "shack";
-                                        scene('kitchen');
-                                    }
-                                break;
-                                case 'hand':
-                                    if(!states.shackopen){
-                                        say("The door is locked.");
-                                    } else {
-                                        //enter shack
-                                        states.comingfrom = "shack";
-                                        scene('kitchen');
-                                    }
-                                break;
-                                case 'jerrycan':
-                                    say("Soaking the shack in gasoline is not going to accomplish anything.");
-                                break;
-                            }
-                        break;
-                        case 'jerrycan':
-                            switch(tool){
-                                case 'eye':
-                                    say("There is still some gas in this jerry can.");
-                                break;
-                                case 'hand':
-                                    add_tool('jerrycan');
-                                    $('#jerrycan').hide();
-                                    say("I'm just going to borrow this for a while...");
-                                break;
-                                case 'rock':
-
-                                break;
-                                case 'stick':
-
-                                break;
-                            }
-                        break;
-                        case 'toforest':
-                            states.comingfrom = 'shack';
-                            scene('forest');
-                        break;
-                    }
-                }
-            </script>
-        </script>
-        <script id="kitchen" type="text/html">
-            <a id="sprite"></a>
-            <a id="knife"></a>
-            <a id="lighter"></a>
-            <a id="outside"></a>
-            <a id="bedroom"></a>
-            {{>showinventory}}
-            <style>
-                #knife {
-                    height: 100px;
-                    width: 100px;
-                    border: 2px dotted #000;
-                    left: 200px;
-                    top: 300px;
-                }
-                #knife:after {
-                    content: "knife";
-                }
-                #lighter {
-                    height: 100px;
-                    width: 100px;
-                    border: 2px dotted #000;
-                    left: 350px;
-                    top: 300px;
-                }
-                #lighter:after {
-                    content: "lighter";
-                }
-                #outside {
-                    height: 100%;
-                    width: 100px;
-                    border: 2px dotted #000;
-                    left: 0;
-                    top: 0;
-                }
-                #bedroom {
-                    height: 100%;
-                    width: 100px;
-                    border: 2px dotted #000;
-                    right: 0;
-                    top: 0;
-                }
-                #game {
-                    background: #fff;
-                }
-                #game:after {
-                    content: "kitchen";
-                    font-size: 10em;
-                    text-align: center;
+                    width: 150px;
+                    background: url(img/drones_alive.gif?v=2) no-repeat;
                 }
                 #sprite {
                     left: 20px;
-                    bottom: 128px;
-                    height: 199px;
-                    width: 51px;
-                    background: url(img/sprite.png) 0 0;
+                    height: 94px;
+                    width: 34px;
+                    background: url(img/sprite.png) 0 0 no-repeat;
                     -webkit-animation: standing 12s steps(2) infinite;
                 }
                 @-webkit-keyframes standing {
                    from { background-position:    0 0px; }
-                     to { background-position: 0 -400px; }
+                     to { background-position: 0 -188px; }
                 }
                 #sprite.walking {
-                    background-image: url(img/walking.png);
-                    width: 59px;
-                    -webkit-animation: walking .8s steps(5) infinite;
+                    background-image: url(img/walking.png?v=6);
+                    width: 50px;
+                    height: 90px;
+                    -webkit-animation: walking .5s steps(4) infinite;
                 }
                 @-webkit-keyframes walking {
                    from { background-position:    0 0px; }
-                     to { background-position:  0 -1000px; }
+                     to { background-position:  0 -362px; }
                 }
             </style>
-            <script>
-                //ready the room with any necessary states
-                if(states.comingfrom=="bedroom"){
-                    $('#sprite').css('right', '20px');
-                }
-                if(hastool('knife')) {
-                    $('#knife').remove();
-                }
-                if(hastool('lighter')) {
-                    $('#lighter').remove();
-                }
-
-                function arrivedat(id){
-                    var tool = current_tool();
-                    switch(id){
-                        case 'knife':
-                            switch(tool){
-                                case 'eye':
-                                    say("It's an old, rusty knife.");
-                                break;
-                                case 'hand':
-                                    add_tool('knife');
-                                    $('#knife').remove();
-                                    say("I'll just borrow this...");
-                                break;
-                            }
-                        break;
-                        case 'lighter':
-                            switch(tool){
-                                case 'eye':
-                                    say("It's an empty lighter.");
-                                break;
-                                case 'hand':
-                                    add_tool('lighter');
-                                    $('#lighter').remove();
-                                    say("I'll just borrow this...");
-                                break;
-                            }
-                        break;
-                        case 'bedroom':
-                            scene('bedroom');
-                        break;
-                        case 'outside':
-                            states.comingfrom = 'kitchen';
-                            scene('shack');
-                        break;
-                    }
-                }
-            </script>
-        </script>
-        <script id="ocean" type="text/html">
-            <a id="sprite" class="swimming right"></a>
-            <div class='fishies'>
-                <span class="fish"></span>
-                <span class="fish"></span>
-                <span class="bubbles"></span>
-            </div>
-            <div id='foreground'></div>
-            <a id="tobeach"></a>
-            <a id="pod"></a>
-            <a id="tangled"></a>
-            <a id="tobeach"></a>
-            {{>showinventory}}
-            <style>
-                #game {
-                    background: url(img/scenes/ocean.png) center center;
-                }
-                .fish {
-                    background: url(img/fish.gif);
-                    top: 200px;
-                    left: -56px;
-                    height: 32px;
-                    width: 56px;
-                    cursor: default;
-                    pointer-events: none;
-                    -webkit-animation: fish1 120s infinite;
-                }
-                @-webkit-keyframes fish1{
-                    from {left: -50px;}
-                    to {left: 100%;}
-                }
-                .fish:nth-child(2){
-                    top: 160px;
-                    left: 100%;
-                    -moz-transform: scaleX(-1);
-                    -o-transform: scaleX(-1);
-                    -webkit-transform: scaleX(-1);
-                    transform: scaleX(-1);
-                    filter: FlipH;
-                    -ms-filter: "FlipH";
-                    -webkit-animation: fish2 70s infinite;
-
-                }
-                @-webkit-keyframes fish2{
-                    from {left: 100%;}
-                    to {left: -70px;}
-                }
-                #foreground {
-                    pointer-events:none;
-                    position: absolute;
-                    z-index: 999;
-                    height: 100%;
-                    width: 100%;
-                    background: url(img/ocean_rays.png) center center;
-                    z-index: 10;
-                }
-                #sprite {
-                    cursor: pointer;
-                    z-index: 9;
-                    left: 20px;
-                    bottom: 183px;
-                    height: 100px;
-                    width: 209px;
-                    background: url(img/swimming.png?v=1) 0 0 no-repeat;
-                    background-size: 211px 600px;
-                    -webkit-animation: swimming 2s steps(6) infinite;
-                }
-                @-webkit-keyframes swimming {
-                   from { background-position:    0 0px; }
-                     to { background-position: 0 -600px; }
-                }
-                #pod {
-                    width: 362px;
-                    height: 345px;
-                    right: 27px;
-                    bottom: 43px;
-                    z-inded: 7;
-                    background: url('img/underwaterpod.png');
-                }
-                #tangled {
-                    height: 430px;
-                    width: 504px;
-                    right: 0;
-                    z-index: 8;
-                    bottom: 0;
-                    background: url('img/tangled.png');
-                }
-                #tobeach {
-                    left: 0;
-                    width: 70px;
-                    height: 100%;
-                    top: 0;
-                }
-            </style>
-            <script>
-                //ready the room with any necessary states
-                states.speed = 8;
-                if(states.untangled){
-                    $('#tangled').hide();
-                }
-                function arrivedat(id){
-                    var tool = current_tool();
-                    switch(id){
-                        case 'tangled':
-                            switch(tool){
-                                case 'eye':
-                                    say("The pod is all tangled up with the parachute.");
-                                break;
-                                case 'hand':
-                                    say("I'll need to cut away the parachute to get at the pod.");
-                                break;
-                            }
-                        break;
-                        case 'pod':
-                            if(states.untangled){
-                                if(!states.pried){
-                                    switch(tool) {
-                                        case 'eye':
-                                            say("The door is suctioned shut.");
-                                        break;
-                                        case 'hand':
-                                            say("I can't pull it open - I'll need to pry it somehow.");
-                                        break;
-                                    }
-                                }
-                            }
-                        break;
-                        case 'tobeach':
-                            states.comingfrom = 'ocean';
-                            scene('beach');
-                        break;
-                    }
-                }
-            </script>
-        </script>
-        <!-- -->        
-        <script id="room2" type="text/html">
-            <a id='sprite'></a>
-            <a id='door'></a>
-            <a id='wizard'></a>
-            {{>showinventory}}
-            <style>
-                #game {
-                    background: url(img/scenes/room2.png) center center;
-                }
-                #sprite {
-                    left: 182px;
-                }
-                #door {
-                    width: 76px;
-                    height: 215px;
-                    bottom: 150px;
-                    left: 134px;
-                    top: 280px;
-                }
-                #wizard {
-                    height: 152px;
-                    width: 82px;
-                    bottom: 128px;
-                    right: 50px;
-                    
-                    background: url(img/wizard.png) 0 0;
-                    -webkit-animation: wizarding 6s steps(5) infinite;
-                }
-                @-webkit-keyframes wizarding {
-                   from { background-position:    0 0px; }
-                     to { background-position: 0 -760px; }
-                }
-            </style>
-            <script>
-                function arrivedat(id){
-                    var tool = current_tool();
-                    switch(id){
-                        case 'door':
-                            if(tool === 'hand') {
-                                scene('room1');
-                            } else if(tool === 'eye'){
-                                say("The only light is coming from the door.");
-                            }
-                        break;
-                        case 'wizard':
-                            if(tool === 'eye') {
-                                say("AAH!");
-                            } else if (tool === 'hand') {
-                                var askoptions = {
-                                    who: 'Who are you?',
-                                    what: 'What are you doing here?',
-                                    where: 'What is this place?',
-                                };
-                                if(states.asked_where === 'true') {
-                                    delete askoptions.where;
-                                    askoptions.more = 'Tell me more about this place.';
-                                }
-                                if(states.asked_more === 'true'){
-                                    delete askoptions.more;
-                                    askoptions.sword = 'Can you please give me a sword?';
-                                }
-                                if(states.asked_sword === 'true') {
-                                    delete askoptions.sword;
-                                    askoptions.bye = 'Thanks for the sword!';
-                                } else {
-                                    //make sure this is last
-                                    askoptions.bye = 'Goodbye';
-                                }
-                                ask(askoptions);
-
-                                $('#text span').on('click', function(){
-                                    var t = $(this).attr('data-say');
-                                    switch(t){
-                                        case 'who':
-                                            say("I am a Wizard. Duh.", "purple");
-                                        break;
-                                        case 'what':
-                                            say("I'm being magical!", "purple");
-                                        break;
-                                        case 'where':
-                                            say("This is a dark room. It is also something that I talk about a lot. There sure is a lot of talking happening right now, and it is coming from me. You are stuck listening to me.", "purple");
-                                            states.asked_where = 'true';
-                                        break;
-                                        case 'bye':
-                                            say("See ya, sucker!", "purple");
-                                        break;
-                                        case 'more':
-                                            say("This is a magical land where everyone's a baby, baby hearts baby hands. Baby policeman! Baby D.A.! Baby court appointed defence attorney! Baby bus driver! Baby Hobo! Incredible babies, go babies go!", "purple");
-                                            states.asked_more = 'true';
-                                        break;
-                                        case 'sword':
-                                            say("Well... OK. Here you go", "purple");
-                                            states.asked_sword = 'true';
-                                            add_tool('sword');
-                                        break;
-                                    }
-                                    return false;
-                                });
-                            } else if (tool === 'sword') {
-                                say("I don't think that's a good idea. He looks dangerous.");
-                            }
-                        break;
-                    }
-                }
-                
-            </script>
         </script>
     </head>
     <body>
@@ -1405,94 +945,193 @@
         <script src="js/vendor/jquery-1.11.0.min.js"></script>
         <script>
             //audio
-            var titleMusic = new Audio('audio/title.mp3');
-
+            var titleMusic = new Audio('audio/reawakening.mp3');
+            //loop
+            titleMusic.addEventListener('ended', function() {
+                this.currentTime = 0;
+                this.play();
+            }, false);
+            titleMusic.play();
+            function globalscene(){
+                //show appropriate saved characters
+                var characters = [
+                    'psychologist',
+                    'soldier',
+                    'doctor',
+                    'robot',
+                    'drones'
+                ];
+                for(var i in characters) {
+                    if(states[characters[i]] == "saved"){
+                        $('#'+characters[i]).addClass('saved');
+                    }
+                }
+            }
+            function globalarrivedat(id) {
+                var tool = current_tool();
+                //dialogue for each character
+                switch(id) {
+                    case 'psychologist': //#456bfb
+                        switch(tool) {
+                            case 'eye':
+                                say("Brian is so zen - a good quality for a psychologist.");
+                            break;
+                            case 'hand':
+                                if(states.psychologist_options === undefined) {
+                                    states.psychologist_options = {
+                                        shower: "Why were you in the shower during an emergency?",
+                                        alive: "How did you stay alive while crashing to this planet in a shower stall?"
+                                    };
+                                }
+                                delete states.psychologist_options.shock;
+                                if($('#game').attr('data-scene') == 'cliff' && states.doctor != "saved") {
+                                    states.psychologist_options.shock = "Are you able to talk to the Doctor? He looks like he is in shock.";
+                                }
+                                ask(states.psychologist_options);
+                                $('#text span').on('click', function(){
+                                    var t = $(this).attr('data-say');
+                                    switch(t){
+                                        case 'shower':
+                                            say("The safest place in the world is always the shower, dude.", "#456bfb");
+                                        break;
+                                        case 'alive':
+                                            say("I just relaxed and meditated the entire time, man.", "#456bfb");
+                                        break;
+                                        case 'shock':
+                                            say("After a few minutes of chatting, the doctor is back to his usual weird self!", "#456bfb");
+                                            $('#doctor_shock').remove();
+                                            states.doctor = "saved";
+                                            $('#doctor').addClass('saved');
+                                        break;
+                                    }
+                                });
+                            break;
+                        }
+                    break;
+                    case 'doctor': //#89f9fa
+                        switch(tool) {
+                            case 'eye':
+                                say("The doctor's head looks really distorted through his prescription space helmet.");
+                            break;
+                            case 'hand':
+                                if(states.doctor_options === undefined) {
+                                    states.doctor_options = {
+                                        introduction: "I'm Arthur, the engineer. What's your name?",
+                                        doctor: "We're very lucky to have a doctor among us!"
+                                    };
+                                }
+                                delete states.doctor_options.girl;
+                                delete states.doctor_options.lockbox;
+                                if($('#game').attr('data-scene') == 'cave' && states.soldier != "saved") {
+                                    states.doctor_options.girl = "What's wrong with Alicia? She can't move and her skin is green.";
+                                }
+                                if($('#game').attr('data-scene') == 'desert' && states.key != "taken") {
+                                    states.doctor_options.lockbox = "Do know what's inside that medical lockbox?";
+                                }
+                                ask(states.doctor_options);
+                                $('#text span').on('click', function(){
+                                    var t = $(this).attr('data-say');
+                                    switch(t){
+                                        case 'introduction':
+                                            say("I'm Charles, the ship's doctor. Nice to meet you.", "#89f9fa");
+                                        break;
+                                        case 'doctor':
+                                            say("Yes, you are. There is a terrible virus that is rampant on this planet, and I'm the only one that knows how to make the cure.", "#89f9fa");
+                                        break;
+                                        case 'girl':
+                                            say("She has a very terrible virus. These are just the first symptoms. The disease invariable ends in death, always within three days. If only I had my supplies...", "#89f9fa");
+                                        break;
+                                        case 'lockbox':
+                                            say("That lockbox contains the cure to the virus, and I happen to have the key! Here, take it.", "#89f9fa");
+                                            add_tool('key');
+                                            states.key = "taken";
+                                        break;
+                                    }
+                                });
+                            break;
+                        }
+                    break;
+                    case 'soldier': //#aaaaaa
+                        switch(tool){
+                            case 'eye':
+                                if(states.drones == "saved") {
+                                    say("Alicia is acting like a soldier, like her mom was. With those drones she's the closest thing we have to security on this planet.");
+                                } else {
+                                    say("Alicia is acting like a soldier, like her mom was.");
+                                }
+                            break;
+                            case 'hand':
+                                if(states.soldier_options === undefined) {
+                                    states.soldier_options = {
+                                        mom: "Tell me about your mom.",
+                                        safe: "Don't worry, I'll keep you safe until we get off this rock."
+                                    };
+                                }
+                                delete states.soldier_options.beast;
+                                if($('#game').attr('data-scene') == 'wreckage' && states.drones == "saved") {
+                                    states.soldier_options.beast = "Do you think your drones can attack that beast?";
+                                }
+                                ask(states.soldier_options);
+                                $('#text span').on('click', function(){
+                                    var t = $(this).attr('data-say');
+                                    switch(t){
+                                        case 'mom':
+                                            say("My mom was a soldier. I'm going to be just like her when I grow up - and it looks like that starts today.","#aaaaaa");
+                                        break;
+                                        case 'safe':
+                                            if(states.drones == "saved") {
+                                                say("Don't worry about me - my drones will keep YOU safe.", "#aaaaaa");
+                                            } else {
+                                                say("Find my drones and I'll be able to keep YOU safe.", "#aaaaaa");
+                                            }
+                                        break;
+                                        case 'beast':
+                                            say("You bet. Drones attack!", "#aaaaaa");
+                                            closedtext = function() {
+                                                $('#drones').css('z-index', '12');
+                                                $('#drones').animate({
+                                                    left: $('#wildanimal').css('left'),
+                                                    right: $('#wildanimal').css('right'),
+                                                    top: $('#wildanimal').css('top'),
+                                                    bottom: $('#wildanimal').css('bottom'),
+                                                }, 2000, function(){
+                                                    $('#drones').animate({
+                                                        bottom: '216px',
+                                                        left: '56px',
+                                                        top: 'auto',
+                                                        right: 'auto'
+                                                    },2000);
+                                                    $('#wildanimal').animate({
+                                                        bottom: '-100px',
+                                                        top: 'auto'
+                                                    }, 500, function(){
+                                                        $('#wildanimal').remove();
+                                                        $('#areaofcontrol').remove();
+                                                        //states
+                                                        states.beast = "slain";
+                                                        save();
+                                                    });
+                                                });
+                                            }
+                                        break;
+                                    }
+                                });
+                            break;
+                        }
+                    break;
+                }
+            }
 
             $(document).ready(function(){
-
-                //inventory events
                 $('.target').on('click', function(e){
                     var targeted = $(this).parent().attr('data-tool');
                     var tool = current_tool();
                     switch(targeted){
                         case 'eye':
-
                         break;
                         case 'hand':
                             switch(tool){
                                 case 'eye':
-                                    say("My hands are shaking from hunger.");
-                                break;
-                                case 'jerrycan':
-                                    say("I poured some of the gasoline on my hands. That... wasn't the smartest thing to do.");
-                                break;
-                            }
-                        break;
-                        case 'rock':
-                            switch(tool){
-                                case 'eye':
-                                    say("It's a rock.");
-                                break;
-                            }
-                        break;
-                        case 'stick':
-                            switch(tool){
-                                case 'eye':
-                                    say("It's a sturdy stick.");
-                                break;
-                                case 'knife':
-                                    lose_tool('stick');
-                                    add_tool('spear');
-                                    say("I made a spear!");
-                                break;
-                            }
-                        break;
-                        case 'jerrycan':
-                            switch(tool){
-                                case 'eye':
-                                    say("It's a jerry can with a little gas in it.");
-                                break;
-                                case 'hand':
-                                    say("I poured some of the gasoline on my hands. That... wasn't the smartest thing to do.");
-                                break;
-                            }
-                        break;
-                        case 'log':
-                            switch(tool){
-                                case 'eye':
-                                    say("It's a dry log.");
-                                braek;
-                                case 'jerrycan':
-                                    say("I should put the log down first.");
-                                break;
-                            }
-                        break;
-                        case 'knife':
-                            switch(tool){
-                                case 'eye':
-                                    say("It's an old, rusty knife.");
-                                break;
-                                case 'hand':
-                                break;
-                                case 'stick':
-                                break;
-                                case 'log':
-
-                                break;
-                            }
-                        break;
-                        case 'lighter':
-                            switch(tool){
-                                case 'eye':
-                                break;
-                                case 'hand':
-                                break;
-                                case 'stick':
-                                break;
-                                case 'log':
-                                break;
-                                case 'jerrycan':
-
                                 break;
                             }
                         break;
@@ -1512,80 +1151,41 @@
                 <div><a class='target'></a></div>
                 <div><a class='target'></a></div>
                 <div><a class='target'></a></div>
-                <div><a class='target'></a></div>
                 <style>
                     a {
-                        cursor: url(img/eye.png), pointer;
+                        cursor: url(img/icons/eye.png), pointer;
                     }
                     #inventory [data-tool=eye]{
                         background-image: url(img/icons/eye.png);
                     }
                     #inventory [data-tool=hand]{
-                        background-image: url(img/icons/hand.png);
+                        background-image: url(img/icons/hand.png?v=1);
                     }
-                    #inventory [data-tool=rock]{
-                        background-image: url(img/icons/rock_icon.png);
+                    #inventory [data-tool=pipe]{
+                        background-image: url(img/icons/pipe.png);
                     }
-                    #inventory [data-tool=stick]{
-                        background-image: url(img/icons/stick_icon.png);
+                    #inventory [data-tool=key]{
+                        background-image: url(img/icons/key.png);
                     }
-                    #inventory [data-tool=jerrycan]{
-                        background-image: url(img/icons/jerrycan_icon.png);
+                    #inventory [data-tool=pills]{
+                        background-image: url(img/icons/pills.png);
                     }
-                    #inventory [data-tool=log]{
-                        background-image: url(img/icons/log_icon.png);
-                    }
-                    #inventory [data-tool=knife]{
+                    #inventory [data-tool=drones]{
                         text-indent: 0;
                     }
-                    #inventory [data-tool=knife]:after{
-                        content: 'knife';
+                    #inventory [data-tool=drones]:after{
+                        content: 'drones';
                     }
-                    #inventory [data-tool=lighter]{
-                        text-indent: 0;
-                    }
-                    #inventory [data-tool=lighter]:after{
-                        content: 'lighter';
-                    }
-                    #inventory [data-tool=spear]{
-                        text-indent: 0;
-                    }
-                    #inventory [data-tool=spear]:after{
-                        content: 'spear';
+                    #inventory [data-tool=robe]{
+                        background-image: url(img/icons/robe.png);
                     }
                 </style>
             </div>
         </div>
-        <audio id="audioTitle" preload="auto"><source src="audio/Title.mp3" type='audio/mp3; codecs="mp3"' /></audio>
+        <audio id="audioTitle" preload="auto"><source src="audio/reawakening.mp3" type='audio/mp3; codecs="mp3"' /></audio>
         <div id='preload'>
-            <img src='img/scenes/intro1.png' />
-            <img src='img/scenes/intro2.png' />
-            <img src='img/intro3_fg.png' />
-            <img src='img/swimming.png' />
-            <img src='img/underwater.png' />
-            <img src='img/fireplace.png' />
-            <img src='img/bird.gif' />
-            <img src='img/fly.gif' />
-            <img src='img/scenes/beach.png' />
-            <img src='img/beach_foreground.png' />
-            <img src='img/sprite_reflection.png' />
-            <img src='img/walking_reflection.png' />
-            <img src='img/scenes/forest.png' />
-            <img src='img/stick.png' />
-            <img src='img/rock.png' />
             <img src='img/sprite.png' />
             <img src='img/walking.png' />
-            <img src='img/scenes/shack.png' />
-            <img src='img/shack_door.png' />
-            <img src='img/shack_door_open.png' />
-            <img src='img/jerrycan.png' />
-            <img src='img/scenes/ocean.png' />
-            <img src='img/fish.gif' />
-            <img src='img/ocean_rays.png' />
-            <img src='img/shuttle.png' />
-            <img src='img/underwaterpod.png' />
-            <img src='img/tangled.png' />
-            <img src='img/parachute.png' />
         </div>
 
         

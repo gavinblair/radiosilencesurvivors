@@ -1,19 +1,26 @@
 var zoomLev;
+function CheckSizeZoom() {
+	var minW = 750;
+    zoomLev = $(window).width() / minW;
+    setZoom();
+}
+function resetZoom() {
+	zoomLev = 1;
+	setZoom();
+}
+function setZoom(){
+	$(document.body).css('zoom', zoomLev);
+    var bottom = $('#game').height()*zoomLev;
+	var bottomOfVisibleWindow = $(window).height();
+	var half = (bottomOfVisibleWindow-bottom)/3;
+	$(document.body).css('margin-top', half+'px');
+}
 jQuery(document).ready(function($){
 
 
     $(window).resize(CheckSizeZoom);
-    function CheckSizeZoom() {
-		var minW = 1136;
-        zoomLev = $(window).width() / minW;
-
-        $(document.body).css('zoom', zoomLev);
-        var bottom = $('#game').height()*zoomLev;
-		var bottomOfVisibleWindow = $(window).height();
-		var half = (bottomOfVisibleWindow-bottom)/3;
-		$(document.body).css('margin-top', half+'px');
-    }
-    CheckSizeZoom();
+    
+    resetZoom();
 
     $('#game').css('visibility', 'visible');
 
@@ -66,12 +73,15 @@ jQuery(document).ready(function($){
 	});
 	$('#text').on('click', function(){
 		if($(this).children('span').length === 0) {
-			$('#text').text('').fadeOut('fast');
+			$('#text').hide();
+			$("#text").text('');
+			closedtext();
 			return false;
 		}
 	});
 
 });
+var closedtext = function() { };
 var pressing = false;
 var glowaction = false;
 var walking = {};
@@ -106,9 +116,10 @@ function walkto(target, targetwidth, id){
 			walking.sprite.removeClass('walking');
 			cancelAnimationFrame(walking.animation);
 			if(id !== undefined) {
-				arrivedat(walking.id);
 				//save the game
 				save();
+				arrivedat(walking.id);
+				globalarrivedat(walking.id);
 			}
 		} else {
 			walking.animation = requestAnimationFrame(walk);
@@ -125,12 +136,12 @@ function walk(){
 		walking.sprite.css('left', walking.pos+walking.step);
 	}
 	if(walking.pos < (walking.target +walking.targetwidth + 10) && (walking.pos+26) > (walking.target - 10)) {
+		save();
 		cancelAnimationFrame(walking.animation);
 		walking.sprite.removeClass('walking');
 		if(walking.id !== undefined) {
 			arrivedat(walking.id);
-			//save the game
-			save();
+			globalarrivedat(walking.id);
 		}
 	} else {
 		walking.animation = requestAnimationFrame(walk);
@@ -138,19 +149,21 @@ function walk(){
 }
 var states = {};
 function save(){
-	var pos = $('#sprite').position();
-	var inventory = [];
-	$('#inventory .has').each(function(){
-		if($(this).attr('data-tool') !== 'eye' && $(this).attr('data-tool') !== 'hand') {
-			inventory.push($(this).attr('data-tool'));
-		}
-	});
-	localStorage.game = JSON.stringify({
-		scene: $('#game').attr('data-scene'),
-		left: pos.left,
-		inventory: inventory,
-		states: states
-	});
+	if($('#sprite').length){
+		var pos = $('#sprite').position();
+		var inventory = [];
+		$('#inventory .has').each(function(){
+			if($(this).attr('data-tool') !== 'eye' && $(this).attr('data-tool') !== 'hand') {
+				inventory.push($(this).attr('data-tool'));
+			}
+		});
+		localStorage.game = JSON.stringify({
+			scene: $('#game').attr('data-scene'),
+			left: pos.left,
+			inventory: inventory,
+			states: states
+		});
+	}
 }
 function load(){
 	if(localStorage.game.length > 0) {
@@ -160,6 +173,9 @@ function load(){
 			$('#inventory .has:last').next().addClass('has').attr('data-tool', game.inventory[i]);
 		}
 		scene(game.scene);
+		if($('#sprite').length){
+			$('#sprite').css('left', game.left+"px");
+		}
 	} else {
 		$('#newgame').click();
 	}
@@ -169,17 +185,21 @@ function hastool(tool){
 }
 
 function say(text, color){
-	if(typeof color === 'undefined') {
-		color = '#fff';
-	} else {
-		text = '"'+text+'"';
-	}
-	var t = $('#text');
-	t.text(text).fadeIn('fast');
-	if(text === '') {
-		t.fadeOut('fast');
-	}
-	t.css('color', color);
+	args = { text: text, color: color };
+	setTimeout((function(){
+		if(typeof this.color === 'undefined') {
+			this.color = '#91f256';
+		} else {
+			this.text = '"'+this.text+'"';
+		}
+		var t = $('#text');
+		t.text(this.text).show();
+		if(this.text === '') {
+			t.hide();
+		}
+		t.addClass('say');
+		t.css('color', this.color);
+	}).bind(args), 0);
 }
 function ask(options) {
 	var t = $('#text');
@@ -187,10 +207,13 @@ function ask(options) {
 	for(var i in options){
 		h += "<span data-say='"+i+"'>\""+options[i]+"\"</span>";
 	}
-	t.html(h).fadeIn('fast');
-	t.css('color', '#fff');
+	t.removeClass('say');
+	t.html(h).show();
+	t.css('color', '#91f256');
 }
 function scene(thescene){
+	closedtext = function() { };
+	save();
 	console.log('loading '+thescene);
 	$('#sprite').attr('style', '');
 	$('#scene').html(ich[thescene]());
@@ -208,6 +231,7 @@ function scene(thescene){
 		return false;
 	});
 	$('a').css('cursor', $('#inventory .active').css('background-image')+', auto');
+	globalscene();
 }
 function current_tool(){
 	return $('#inventory .active').attr('data-tool');
